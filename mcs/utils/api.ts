@@ -1,0 +1,20 @@
+// utils/api.ts
+// Centraliza as funções de requisição para a API
+
+const API_BASE = 'https://render.com/docs/web-services#port-binding';
+
+export async function fetcher<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options?.headers || {})
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Erro ao buscar ${endpoint}: ${res.status}`);
+  }
+  return res.json();
+}
+
+
