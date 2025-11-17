@@ -1,8 +1,24 @@
 // utils/usersApi.ts
 import { fetcher } from "./api";
 
-export async function getUsers() {
+
+async function getUsers() {
   return fetcher('/users/');
 }
+
+async function loginUser(email: string, senha: string) {
+  return fetcher('/users/login/', {
+    method: 'POST',
+    body: JSON.stringify({ email, senha }),
+  });
+}
+
+// Adicione outras funções relacionadas a usuários aqui
+
+export { getUsers, loginUser };
+export default {
+  getUsers,
+  loginUser,
+};
 
 // Adicione outras funções relacionadas a usuários aqui

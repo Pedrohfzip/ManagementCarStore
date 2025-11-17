@@ -1,4 +1,5 @@
 import { FaUserCircle } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Header({ onSearch }: { onSearch: (value: string) => void }) {
   return (
@@ -20,9 +21,9 @@ export default function Header({ onSearch }: { onSearch: (value: string) => void
         >
           Dashboard
         </a>
-        <span className="text-2xl sm:text-3xl text-zinc-700 cursor-pointer">
+        <Link href="/login" className="text-2xl sm:text-3xl text-zinc-700 cursor-pointer flex items-center">
           <FaUserCircle />
-        </span>
+        </Link>
       </div>
     </header>
   );
