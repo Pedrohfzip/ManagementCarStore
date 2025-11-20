@@ -12,10 +12,10 @@ async function loginUser(email: string, senha: string) {
     body: JSON.stringify({ email, senha }),
   });
 }
-async function registerUser(email: string, senha: string) {
+async function registerUser(email: string, senha: string, name: string) {
   return fetcher('/users/register/', {
     method: 'POST',
-    body: JSON.stringify({ email, senha }),
+    body: JSON.stringify({ email, senha, name }),
   });
 }
 
@@ -24,6 +24,7 @@ async function registerUser(email: string, senha: string) {
 export default {
   getUsers,
   loginUser,
+  registerUser,
 };
 
 // Adicione outras funções relacionadas a usuários aqui

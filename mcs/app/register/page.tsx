@@ -1,8 +1,10 @@
 
 'use client';
 import { useState } from 'react';
+import loginProvider from '@/utils/usersApi';
 
 export default function RegisterPage() {
+	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -11,18 +13,9 @@ export default function RegisterPage() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setLoading(true);
-		setError(null);
-		setSuccess(false);
-		// Aqui você pode chamar sua API de registro
-		setTimeout(() => {
-			setLoading(false);
-			if (!email || !senha) {
-				setError('Preencha todos os campos.');
-			} else {
-				setSuccess(true);
-			}
-		}, 1000);
+		console.log(name, email, senha);
+		const response = await loginProvider.registerUser(email, senha, name);
+		console.log(response);
 	};
 
 	return (
@@ -33,11 +26,22 @@ export default function RegisterPage() {
 			>
 				<h1 className="text-2xl font-bold text-center mb-2">Registrar</h1>
 				<label className="flex flex-col gap-1">
+					Nome
+					<input
+						type="text"
+						className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						defaultValue={name}
+						onChange={e => setName(e.target.value)}
+						required
+						autoComplete="name"
+					/>
+				</label>
+				<label className="flex flex-col gap-1">
 					Email
 					<input
 						type="email"
 						className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-						value={email}
+						defaultValue={email}
 						onChange={e => setEmail(e.target.value)}
 						required
 						autoComplete="email"
@@ -48,7 +52,7 @@ export default function RegisterPage() {
 					<input
 						type="password"
 						className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-						value={senha}
+						defaultValue={senha}
 						onChange={e => setSenha(e.target.value)}
 						required
 						autoComplete="new-password"
