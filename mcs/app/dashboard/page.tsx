@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { getUsers } from "@/utils/usersApi";
 
 export default function Dashboard() {
     const [users, setUsers] = useState<any[]>([]);
@@ -11,8 +10,8 @@ export default function Dashboard() {
         async function fetchUsers() {
             try {
                 setLoading(true);
-                const data = await getUsers();
-                setUsers(Array.isArray(data) ? data : []);
+                // const data = await getUsers();
+                // setUsers(Array.isArray(data) ? data : []);
             } catch (err: any) {
                 setError(err.message || 'Erro ao buscar usuários');
             } finally {

@@ -11,11 +11,18 @@ export default function LoginPage() {
 	const [senha, setSenha] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [success, setSuccess] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		console.log(email, senha);
 		e.preventDefault();
-		const response = await loginProvider.loginUser(email, senha);
+		const response: any = await loginProvider.loginUser(email, senha);
+		if (response?.error) {
+			setError(response.error);
+		}
+		if(response.message){
+			setSuccess(true);
+		}
 		console.log(response);
 	};
 
@@ -56,6 +63,7 @@ export default function LoginPage() {
 				>
 					{loading ? 'Entrando...' : 'Entrar'}
 				</button>
+				{success && <div className="text-green-600 text-sm text-center">Login realizado com sucesso!</div>}
 				<div className="text-center mt-2 text-sm text-zinc-700">
 					Ainda não tem login?{' '}
 					<Link href="/register" className="text-blue-600 hover:underline font-semibold">Registre-se</Link>

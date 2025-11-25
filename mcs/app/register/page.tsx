@@ -14,7 +14,8 @@ export default function RegisterPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		console.log(name, email, senha);
-		const response = await loginProvider.registerUser(email, senha, name);
+		const response = await loginProvider.registerUser(name, email, senha);
+		if (response) setSuccess(true);
 		console.log(response);
 	};
 

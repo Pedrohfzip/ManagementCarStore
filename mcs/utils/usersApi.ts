@@ -12,10 +12,15 @@ async function loginUser(email: string, senha: string) {
     body: JSON.stringify({ email, senha }),
   });
 }
-async function registerUser(email: string, senha: string, name: string) {
+async function registerUser(name: string, email: string, senha: string) {
   return fetcher('/users/register/', {
     method: 'POST',
-    body: JSON.stringify({ email, senha, name }),
+    body: JSON.stringify({ name, email, senha }),
+  });
+}
+async function deleteUser(userId: string) {
+  return fetcher(`/users/${userId}/`, {
+    method: 'DELETE',
   });
 }
 
@@ -25,6 +30,7 @@ export default {
   getUsers,
   loginUser,
   registerUser,
+  deleteUser,
 };
 
 // Adicione outras funções relacionadas a usuários aqui
