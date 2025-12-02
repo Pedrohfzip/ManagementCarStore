@@ -9,18 +9,36 @@ async function getUsers() {
 async function loginUser(email: string, senha: string) {
   return fetcher('/users/login/', {
     method: 'POST',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ email, senha }),
   });
 }
 async function registerUser(name: string, email: string, senha: string) {
   return fetcher('/users/register/', {
     method: 'POST',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ name, email, senha }),
   });
 }
 async function deleteUser(userId: string) {
   return fetcher(`/users/${userId}/`, {
     method: 'DELETE',
+  });
+}
+
+async function getAllUsers() {
+  return fetcher('/users/allUsers', {
+    method: 'GET',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
   });
 }
 
@@ -31,6 +49,7 @@ export default {
   loginUser,
   registerUser,
   deleteUser,
+  getAllUsers,
 };
 
 // Adicione outras funções relacionadas a usuários aqui
