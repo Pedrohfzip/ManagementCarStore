@@ -8,12 +8,8 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(options?.headers || {})
     },
   });
-  if (!res.ok) {
-    throw new Error(`Erro ao buscar ${endpoint}: ${res.status}`);
-  }
   return res.json();
 }
 

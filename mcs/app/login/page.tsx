@@ -1,10 +1,12 @@
 
 'use client';
 
-
+import React from 'react';
+import { useRouter } from 'next/navigation'; 
 import Link from 'next/link';
 import loginProvider from '@/utils/usersApi';
 import { useState } from 'react';
+import Notification from '@/components/Notification';
 
 export default function LoginPage() {
 	const [email, setEmail] = useState('');
@@ -12,22 +14,46 @@ export default function LoginPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState(false);
-
+	const [notif, setNotif] = useState<{message: string, type: "success" | "error"} | null>(null);
+	const router = useRouter(); 
 	const handleSubmit = async (e: React.FormEvent) => {
-		console.log(email, senha);
 		e.preventDefault();
-		const response: any = await loginProvider.loginUser(email, senha);
-		if (response?.error) {
-			setError(response.error);
+		setLoading(true);
+		setError(null);
+		setSuccess(false);
+		try {
+			const response: any = await loginProvider.loginUser(email, senha);
+			if (response?.erro) {
+				setSuccess(false);
+				setError(response.erro);
+				setNotif({ message: response.erro, type: "error" });
+			} else if (response?.message) {
+				setError(null);
+				setSuccess(true);
+				setNotif({ message: response.message, type: "success" });
+				setTimeout(() => {
+					router.push('/');
+				}, 3000);
+				
+			} else {
+				setNotif({ message: "Erro desconhecido.", type: "error" });
+			}
+		} catch (err: any) {
+			setNotif({ message: err.message || "Erro ao logar.", type: "error" });
+		} finally {
+			setLoading(false);
 		}
-		if(response.message){
-			setSuccess(true);
-		}
-		console.log(response);
 	};
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-zinc-100">
+			{notif && (
+				<Notification
+					message={notif.message}
+					type={notif.type}
+					onClose={() => setNotif(null)}
+				/>
+			)}
 			<form
 				onSubmit={handleSubmit}
 				className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm flex flex-col gap-4"
@@ -55,7 +81,6 @@ export default function LoginPage() {
 						autoComplete="current-password"
 					/>
 				</label>
-				{error && <div className="text-red-600 text-sm text-center">{error}</div>}
 				<button
 					type="submit"
 					className="bg-blue-600 text-white rounded-full py-2 font-semibold hover:bg-blue-700 transition"
@@ -63,7 +88,6 @@ export default function LoginPage() {
 				>
 					{loading ? 'Entrando...' : 'Entrar'}
 				</button>
-				{success && <div className="text-green-600 text-sm text-center">Login realizado com sucesso!</div>}
 				<div className="text-center mt-2 text-sm text-zinc-700">
 					Ainda não tem login?{' '}
 					<Link href="/register" className="text-blue-600 hover:underline font-semibold">Registre-se</Link>
