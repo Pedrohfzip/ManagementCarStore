@@ -42,6 +42,16 @@ async function getAllUsers() {
   });
 }
 
+async function getAuthenticatedUser() {
+  return fetcher('/users/authenticatedUser', {
+    method: 'GET',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  });
+}
+
 // Adicione outras funções relacionadas a usuários aqui
 
 export default {
@@ -50,6 +60,7 @@ export default {
   registerUser,
   deleteUser,
   getAllUsers,
+  getAuthenticatedUser,
 };
 
 // Adicione outras funções relacionadas a usuários aqui
