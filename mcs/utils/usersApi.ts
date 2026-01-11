@@ -51,6 +51,15 @@ async function getAuthenticatedUser() {
     },
   });
 }
+async function logoutUser(){
+  return fetcher('/logout/', {
+    method: 'POST',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  });
+}
 
 // Adicione outras funções relacionadas a usuários aqui
 
@@ -61,6 +70,7 @@ export default {
   deleteUser,
   getAllUsers,
   getAuthenticatedUser,
+  logoutUser,
 };
 
 // Adicione outras funções relacionadas a usuários aqui

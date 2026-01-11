@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav className="w-full flex-1 flex flex-col items-center">
           <ul className="flex flex-col gap-4 w-full items-center">
             <li className="w-full flex justify-center"><Link href="/dashboard" className="sidebar-link">Início</Link></li>
-            <li className="w-full flex justify-center"><Link href="/carros" className="sidebar-link">Usuários</Link></li>
+            <li className="w-full flex justify-center"><Link href="/dashboard/usuarios" className="sidebar-link">Usuários</Link></li>
             {/* Adicione mais links conforme necessário */}
           </ul>
         </nav>
