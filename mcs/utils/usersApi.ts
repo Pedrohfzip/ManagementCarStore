@@ -52,7 +52,7 @@ async function getAuthenticatedUser() {
   });
 }
 async function logoutUser(){
-  return fetcher('/logout/', {
+  return fetcher('/token/logout/', {
     method: 'POST',
     credentials: "include",
     headers: {

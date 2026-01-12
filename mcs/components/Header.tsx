@@ -20,9 +20,9 @@ const Header: React.FC<HeaderProps> = ({ authenticate, onSearch }) => {
     router.push("/dashboard");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setMenuOpen(false);
-    userProvider.logoutUser();
+    await userProvider.logoutUser();
     router.push("/login");
   };
 

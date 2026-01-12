@@ -17,13 +17,14 @@ export default function Home() {
     async function fetchAuthenticatedUser() {
       try {
         const user: any = await usersApi.getAuthenticatedUser();
-        if (user.erro) {
+        if (user.error) {
           setAuthenticate(false);
           return;
         }
         setAuthenticate(user);
       } catch (error) {
-        //
+        console.error("Erro ao buscar usuário autenticado:", error);
+        setAuthenticate(false);
       }
     }
     fetchAuthenticatedUser();
