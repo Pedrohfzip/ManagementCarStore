@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import CarCard from '@/components/CarCard';
 import { FaPlus } from "react-icons/fa";
 // Importe a API de carros conforme necessário
-import { carros } from '@/components/cars';
+import carsApi from '@/utils/carsApi';
 
 export default function CarsDashboardPage() {
 	const [cars, setCars] = useState<any[]>([]);
@@ -13,9 +13,17 @@ export default function CarsDashboardPage() {
 	const [search, setSearch] = useState("");
 
 	useEffect(() => {
-		// Substitua por chamada à API se necessário
-		setCars(carros);
-		setLoading(false);
+		async function fetchCars() {
+			try {
+				const response: any = await carsApi.getAllCars();
+				setCars(response);
+			} catch (err) {
+				setError('Erro ao buscar carros.');
+			} finally {
+				setLoading(false);
+			}
+		}
+		fetchCars();
 	}, []);
 
 	const filteredCars = cars.filter(

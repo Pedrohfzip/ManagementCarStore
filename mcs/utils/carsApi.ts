@@ -16,8 +16,16 @@ async function createCar(name: string, brand: string, year: number, photo: File 
   });
 }
 
+async function getAllCars() {
+  return fetcher('/cars/getAllCars/', {
+    method: 'GET',
+    credentials: "include",
+  });
+}
+
 export default {
   createCar,
+  getAllCars,
 };
 
 // Adicione outras funções relacionadas a carros aqui
