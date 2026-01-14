@@ -2,16 +2,15 @@
 "use client";
 import { useState,useEffect } from "react";
 import Header from "../components/Header";
-import { carros, Car } from "../components/cars";
+import carsApi from "@/utils/carsApi";
 import CarCard from "../components/CarCard";
 import usersApi from "@/utils/usersApi";
 export default function Home() {
   const [busca, setBusca] = useState("");
   const [authenticate, setAuthenticate] = useState<any>({});
-
-  const carrosFiltrados = carros.filter((car) =>
-    car.nome.toLowerCase().includes(busca.toLowerCase())
-  );
+  const [cars, setCars] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAuthenticatedUser() {
@@ -28,10 +27,21 @@ export default function Home() {
       }
     }
     fetchAuthenticatedUser();
+    async function fetchCars() {
+      try {
+        const response: any = await carsApi.getAllCars();
+        console.log(response);
+        setCars(response);
+      } catch (err) {
+        setError('Erro ao buscar carros.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCars();
   }, []);
 
-  // Top 1 carro em destaque (exemplo)
-  const topCar = carros[0];
+  // Top 1 carro em destaque (primeiro do array)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-zinc-100 flex flex-col">
@@ -60,7 +70,7 @@ export default function Home() {
           {/* Carro em destaque */}
           <div className="flex-1 flex justify-center">
             <div className="w-full max-w-xs md:max-w-sm">
-              <CarCard car={topCar} />
+              <CarCard car={cars[0]} />
             </div>
           </div>
         </section>
@@ -68,13 +78,19 @@ export default function Home() {
         {/* Listagem de carros */}
         <section>
           <h2 className="text-xl sm:text-2xl font-bold mb-6 text-zinc-900 text-center sm:text-left">Todos os carros</h2>
-          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
-            {carrosFiltrados.length > 0 ? (
-              carrosFiltrados.map((car) => <CarCard key={car.id} car={car} />)
-            ) : (
-              <p className="col-span-full text-center text-zinc-500">Nenhum carro encontrado.</p>
-            )}
-          </div>
+          {loading ? (
+            <p className="text-zinc-500">Carregando carros...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
+              {cars.length > 0 ? (
+                cars.map((car) => <CarCard key={car.id} car={car} />)
+              ) : (
+                <p className="col-span-full text-center text-zinc-500">Nenhum carro encontrado.</p>
+              )}
+            </div>
+          )}
         </section>
       </main>
     </div>

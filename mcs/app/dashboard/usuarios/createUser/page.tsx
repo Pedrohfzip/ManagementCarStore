@@ -46,10 +46,10 @@ export default function CreateUserPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin p-4">
+		<div className="min-h-screen flex items-center rounded-lg justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin p-4">
 			<form
 				onSubmit={handleSubmit}
-				className="relative bg-white/90 p-8 rounded-3xl shadow-2xl w-full max-w-md flex flex-col gap-6 border border-blue-100 animate-slideInLogin"
+				className="relative  p-8 rounded-3xl  w-full max-w-md flex flex-col gap-6  animate-slideInLogin"
 				autoComplete="off"
 			>
 				<h1 className="text-2xl font-extrabold text-zinc-900 mb-1 tracking-tight">Criar Usuário</h1>

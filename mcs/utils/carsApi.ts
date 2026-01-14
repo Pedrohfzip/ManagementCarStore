@@ -1,12 +1,15 @@
 // utils/carsApi.ts
 import { fetcher } from "./api";
 
-async function createCar(name: string, brand: string, year: number, photo: File | null) {
+async function createCar(name: string, brand: string, year: number, photo: File | null, gas: string, color: string, km: number) {
   const data = {
     name,
     brand,
     year,
     photo,
+    gas,
+    color,
+    km,
   }
 
   return fetcher('/cars/createCar/', {
