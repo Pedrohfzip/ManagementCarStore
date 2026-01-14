@@ -22,6 +22,7 @@ const router = useRouter();
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;
+		console.log(file);
 		setImagem(file);
 		if (file) {
 			setPreview(URL.createObjectURL(file));
@@ -35,8 +36,9 @@ const router = useRouter();
 		setLoading(true);
 		setError(null);
 		setSuccess(false);
+		console.log(preview);
 		try {
-			const response = await carProvider.createCar(name, brand, Number(year), imagem, gas, color, Number(km));
+			const response = await carProvider.createCar(name, brand, Number(year),  imagem, gas, color, Number(km));
 			if (response?.erro) {
 				setError(response.erro);
 			} else {

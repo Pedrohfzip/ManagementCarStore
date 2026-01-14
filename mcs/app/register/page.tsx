@@ -55,13 +55,7 @@ export default function RegisterPage() {
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin">
 			{/* Notification */}
-			{notif && (
-				<Notification
-					message={notif.message}
-					type={notif.type}
-					onClose={() => setNotif(null)}
-				/>
-			)}
+
 			{/* Loading overlay */}
 			{loading && (
 				<div style={{
