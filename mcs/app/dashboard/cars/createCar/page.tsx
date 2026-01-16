@@ -13,7 +13,7 @@ const [year, setYear] = useState("");
 const [gas, setGas] = useState("");
 const [color, setColor] = useState("");
 const [km, setKm] = useState("");
-const [imagem, setImagem] = useState<File | null>(null);
+const [photo, setImagem] = useState<File | null>(null);
 const [preview, setPreview] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState<string | null>(null);
@@ -38,7 +38,7 @@ const router = useRouter();
 		setSuccess(false);
 		console.log(preview);
 		try {
-			const response = await carProvider.createCar(name, brand, Number(year),  imagem, gas, color, Number(km));
+			const response = await carProvider.createCar(name, brand, Number(year),  photo, gas, color, Number(km));
 			if (response?.erro) {
 				setError(response.erro);
 			} else {

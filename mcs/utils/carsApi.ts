@@ -2,21 +2,22 @@
 import { fetcher } from "./api";
 
 async function createCar(name: string, brand: string, year: number, photo: File | null, gas: string, color: string, km: number) {
-  const data = {
-    name,
-    brand,
-    year,
-    photo,
-    gas,
-    color,
-    km,
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('brand', brand);
+  formData.append('year', String(year));
+  formData.append('gas', gas);
+  formData.append('color', color);
+  formData.append('km', String(km));
+  if (photo) {
+    formData.append('imagem', photo); // nome do campo igual ao do backend
   }
 
-  return fetcher('/cars/createCar/', {
+  return fetch('http://localhost:8080/cars/createCar/', {
     method: 'POST',
     credentials: "include",
-    body: JSON.stringify(data),
-  });
+    body: formData,
+  }).then(res => res.json());
 }
 
 async function getAllCars() {
