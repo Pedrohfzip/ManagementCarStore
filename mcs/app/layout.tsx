@@ -31,9 +31,13 @@ export default function RootLayout({
         <title>CarStore</title>
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <meta name="description" content="Gestão de carros premium e usuários - CarStore" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+        <style>{`body { font-family: 'Archivo', sans-serif !important; }`}</style>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         {/* Logo e nome do site fixos no topo para todas as páginas */}
         <header className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 shadow text-white">

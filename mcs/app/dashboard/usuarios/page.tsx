@@ -57,25 +57,41 @@ export default function UsuariosDashboardPage() {
         ) : filteredUsers.length === 0 ? (
           <p className="text-zinc-400">Nenhum usuário encontrado.</p>
         ) : (
-          <ul className="divide-y divide-blue-50">
-            {filteredUsers.map((user, idx) => (
-              <li key={user.id || idx} className="py-3 flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg">
-                  {user.nome ? user.nome[0].toUpperCase() : '?'}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-zinc-900 truncate">{user.name || 'Usuário'}</div>
-                  <div className="text-xs text-zinc-500 truncate">{user.email || ''}</div>
-                </div>
-                <button className="p-2 rounded-full hover:bg-blue-50 text-blue-600 transition-colors" title="Editar">
-                  <FaEdit />
-                </button>
-                <button className="p-2 rounded-full hover:bg-red-50 text-red-600 transition-colors" title="Excluir">
-                  <FaTrash />
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-blue-100">
+              <thead className="bg-blue-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Foto</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Nome</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Email</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Tipo</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-blue-50">
+                {filteredUsers.map((user, idx) => (
+                  <tr key={user.id || idx} className="hover:bg-blue-50 transition">
+                    <td className="px-4 py-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg">
+                        {user.nome ? user.nome[0].toUpperCase() : '?'}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-semibold text-zinc-800">{user.name || user.nome || 'Usuário'}</td>
+                    <td className="px-4 py-3">{user.email || ''}</td>
+                    <td className="px-4 py-3">{user.role || '-'}</td>
+                    <td className="px-4 py-3 flex flex-wrap gap-2">
+                      <a href={`/dashboard/usuarios/editUser?id=${user.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center gap-1" title="Editar">
+                        <FaEdit /> Editar
+                      </a>
+                      <button className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center gap-1" title="Excluir">
+                        <FaTrash /> Excluir
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
