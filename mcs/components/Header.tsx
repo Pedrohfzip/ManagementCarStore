@@ -1,37 +1,32 @@
 
 import { FaUserCircle } from "react-icons/fa";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import UserMenu from "./UserMenu";
 import userProvider from "@/utils/usersApi";
+import { Search, X } from "lucide-react";
 interface HeaderProps {
   authenticate: boolean;
-  onSearch: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ authenticate, onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ authenticate }) => {
   const [searchFocus, setSearchFocus] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const router = useRouter();
 
+  const onSearch = (query: string) => {
+    // Implement search logic here
+  };
+
+  const handleLogout = () => {
+    // Implement logout logic here
+  };
+
   const handleProfile = () => {
-    setMenuOpen(false);
-    router.push("/dashboard");
-  };
-
-  const handleLogout = async () => {
-    setMenuOpen(false);
-    await userProvider.logoutUser();
-    router.push("/login");
-  };
-
-  const handleUserIconClick = () => {
-    if (authenticate) {
-      setMenuOpen((open) => !open);
-    } else {
-      router.push("/login");
-    }
+    // Implement profile navigation logic here
   };
 
   return (
@@ -44,15 +39,18 @@ const Header: React.FC<HeaderProps> = ({ authenticate, onSearch }) => {
       }}
     >
       {/* Logo animada */}
-      <Link href="/" className="flex items-center gap-2 group">
-        <span className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight drop-shadow animate-slideDown">
+      <a href="/" className="flex items-center gap-2 group">
+        <span className="hidden sm:inline text-2xl sm:text-3xl font-extrabold text-white tracking-tight drop-shadow animate-slideDown">
           CarStore
         </span>
-        <span className="w-3 h-3 bg-gradient-to-br from-yellow-400 to-pink-500 rounded-full animate-pulse ml-1 group-hover:scale-125 transition-transform" />
-      </Link>
+        <span className="inline sm:hidden text-lg font-extrabold text-white tracking-tight drop-shadow animate-slideDown">
+          CS
+        </span>
+        <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-to-br from-yellow-400 to-pink-500 rounded-full animate-pulse group-hover:scale-125 transition-transform" />
+      </a>
 
-      {/* Campo de busca animado */}
-      <div className="flex-1 flex justify-center mx-2">
+      {/* Campo de busca desktop (>=640px) */}
+      <div className="hidden sm:flex flex-1 justify-center mx-2">
         <input
           type="text"
           placeholder="Procurar carros..."
@@ -64,31 +62,75 @@ const Header: React.FC<HeaderProps> = ({ authenticate, onSearch }) => {
         />
       </div>
 
-      {/* Ações do usuário */}
-      <div className="flex items-center gap-3 flex-shrink-0 relative">
-        {authenticate && (
+      {/* Ícone de busca mobile (<640px) */}
+      <div className="flex sm:hidden flex-1 justify-center">
+        <div className="relative">
           <button
-            className="px-4 py-2 rounded-full bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20"
-            style={{ boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)' }}
-            onClick={() => router.push("/dashboard")}
+            onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+            className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20"
+            aria-label="Abrir busca"
           >
-            Dashboard
+            {mobileSearchOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Search className="w-5 h-5" />
+            )}
           </button>
-        )}
-        <button
-          className="text-3xl text-white hover:text-yellow-300 transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none"
-          onClick={handleUserIconClick}
-          aria-label={authenticate ? "Abrir menu do usuário" : "Ir para login"}
-        >
-          <FaUserCircle className="drop-shadow" />
-        </button>
-        <UserMenu
-          open={!!menuOpen && !!authenticate}
-          onClose={() => setMenuOpen(false)}
-          onLogout={handleLogout}
-          onProfile={handleProfile}
-        />
+          {mobileSearchOpen && (
+            <div className="absolute top-full mt-2 right-0   w-40 animate-fadeIn z-50">
+              <input
+                type="text"
+                placeholder="Procurar carros..."
+                className="w-full px-4 py-2 rounded-full border-none shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 text-base bg-white text-zinc-900"
+                onChange={e => onSearch(e.target.value)}
+                onFocus={() => setSearchFocus(true)}
+                onBlur={() => setSearchFocus(false)}
+                inputMode="search"
+                autoFocus
+              />
+            </div>
+          )}
+        </div>
       </div>
+
+      {authenticate && (
+        <button
+          className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm rounded-full bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20 mr-2"
+          style={{ boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)' }}
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.location.assign('/dashboard');
+            }
+          }}
+        >
+          <span className="hidden sm:inline">Dashboard</span>
+          <span className="sm:hidden">DB</span>
+        </button>
+      )}
+      <button
+        className="text-2xl text-white hover:text-yellow-300 transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full"
+        style={{ minWidth: 36, minHeight: 36 }}
+        onClick={() => {
+          if (authenticate) {
+            setMenuOpen(!menuOpen);
+          } else {
+            if (typeof window !== 'undefined') {
+              window.location.assign('/login');
+            }
+          }
+        }}
+        aria-label={authenticate ? "Abrir menu do usuário" : "Ir para login"}
+        type="button"
+      >
+        <FaUserCircle className="drop-shadow" />
+      </button>
+
+      <UserMenu
+        open={!!menuOpen && !!authenticate}
+        onClose={() => setMenuOpen(false)}
+        onLogout={handleLogout}
+        onProfile={handleProfile}
+      />
     </header>
   );
 };

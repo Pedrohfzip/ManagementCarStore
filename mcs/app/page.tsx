@@ -51,13 +51,15 @@ export default function Page() {
 
   // Top 1 carro em destaque (primeiro do array)
 
-  return (
+    return (
     <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'}`}>
       <Header authenticate={authenticate} onSearch={setBusca} />
-      <div className="absolute top-4 right-60 z-50">
+      
+      {/* Botão de tema flutuante colado à direita */}
+      <div className="fixed top-20 right-5 z-50">
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="flex items-center gap-2 px-3 py-2 rounded-full shadow bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 transition text-lg"
+          className="flex items-center gap-2 px-3 py-2 rounded-full shadow-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 transition hover:scale-100 text-lg"
           aria-label="Alternar modo claro/escuro"
         >
           {theme === 'dark' ? (
@@ -65,18 +67,17 @@ export default function Page() {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1.5M12 19.5V21M4.219 4.219l1.061 1.061M17.657 17.657l1.061 1.061M3 12h1.5M19.5 12H21M4.219 19.781l1.061-1.061M17.657 6.343l1.061-1.061M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
               </svg>
-              <p>Modo Claro</p>
             </>
           ) : (
             <>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0112 21.75c-5.385 0-9.75-4.365-9.75-9.75 0-4.136 2.635-7.64 6.348-9.123a.75.75 0 01.908.37.75.75 0 01-.082.988A7.501 7.501 0 0012 19.5a7.48 7.48 0 006.516-3.574.75.75 0 01.988-.082.75.75 0 01.37.908z" />
               </svg>
-              <span>Modo Escuro</span>
             </>
           )}
         </button>
       </div>
+
       <main className="flex-1 w-full max-w-7xl mx-auto pt-28 pb-10 px-2 sm:px-6">
         {/* Hero Section */}
         <section className="mb-10 flex flex-col md:flex-row items-center gap-8 md:gap-16">
@@ -91,7 +92,7 @@ export default function Page() {
               <input
                 type="text"
                 placeholder="Procurar carros por nome..."
-                className="w-full max-w-xs px-4 py-3  dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50"
+                className="w-full max-w-xs px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50"
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
                 inputMode="search"
