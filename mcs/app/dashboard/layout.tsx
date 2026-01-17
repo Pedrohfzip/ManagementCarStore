@@ -1,14 +1,22 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaUserCircle, FaBars } from 'react-icons/fa';
 import './dashboard.css';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(typeof window !== 'undefined' && window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      window.localStorage.setItem('theme', theme);
+    }
+  }, [theme]);
 
   return (
-    <div className="dashboard-layout flex">
+    <div className={`dashboard-layout flex min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'}`}>
       {/* Botão de menu para mobile */}
       <button
         className="fixed top-4 left-4 z-30 bg-blue-600 text-white rounded-full p-2 flex items-center justify-center text-2xl shadow-lg md:hidden"
@@ -19,7 +27,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </button>
       {/* Sidebar */}
       <aside
-        className={`sidebar flex flex-col items-center py-6 bg-white z-20 transition-transform duration-300 fixed md:static h-full md:h-auto top-0 left-0 w-64 md:w-60 shadow-lg md:shadow-none
+        className={`sidebar flex flex-col items-center py-6 ${theme === 'dark' ? 'bg-zinc-900' : 'bg-white'} z-20 transition-transform duration-300 fixed md:static h-full md:h-auto top-0 left-0 w-64 md:w-60 shadow-lg md:shadow-none
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
       >
         <div className="mb-8 flex flex-col items-center w-full">

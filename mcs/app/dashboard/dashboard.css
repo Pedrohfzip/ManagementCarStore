@@ -58,7 +58,8 @@
 }
 
 .dashboard-content {
-
+ padding: 0%;
+ width: 100%;
 }
 
 @media (max-width: 767px) {

@@ -1,3 +1,4 @@
+
 // utils/usersApi.ts
 import { fetcher } from "./api";
 
@@ -60,6 +61,15 @@ async function logoutUser(){
     },
   });
 }
+async function refreshToken() {
+  return fetcher('/token/refresh/', {
+    method: 'POST',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  });
+}
 
 // Adicione outras funções relacionadas a usuários aqui
 
@@ -71,6 +81,7 @@ export default {
   getAllUsers,
   getAuthenticatedUser,
   logoutUser,
+  refreshToken,
 };
 
 // Adicione outras funções relacionadas a usuários aqui

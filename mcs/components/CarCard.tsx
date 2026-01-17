@@ -1,4 +1,5 @@
 import { FaCalendarAlt, FaTachometerAlt, FaPalette } from "react-icons/fa";
+import Link from "next/link";
 
 export default function CarCard({ car }: { car: any }) {
   return (
@@ -40,11 +41,14 @@ export default function CarCard({ car }: { car: any }) {
         <div className="border-t border-slate-200 pt-4 flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-500">Preço</p>
-            <p className="text-green-600 font-semibold text-xl">{car?.price || car?.preco || 'R$ --'}</p>
+            <p className="text-green-600 font-semibold text-xl">{`R$ ${car?.price}` || car?.preco || 'R$ --'}</p>
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-colors duration-200">
+          <Link
+            href={`/Car?id=${car?.id}`}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-colors duration-200"
+          >
             Ver Detalhes
-          </button>
+          </Link>
         </div>
       </div>
     </div>

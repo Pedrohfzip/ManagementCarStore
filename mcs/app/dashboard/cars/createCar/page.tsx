@@ -14,6 +14,7 @@ const [gas, setGas] = useState("");
 const [color, setColor] = useState("");
 const [km, setKm] = useState("");
 const [photo, setImagem] = useState<File | null>(null);
+const [price, setPrice] = useState("");
 const [preview, setPreview] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState<string | null>(null);
@@ -38,7 +39,7 @@ const router = useRouter();
 		setSuccess(false);
 		console.log(preview);
 		try {
-			const response = await carProvider.createCar(name, brand, Number(year),  photo, gas, color, Number(km));
+			const response = await carProvider.createCar(name, brand, Number(year),  photo, gas, color, Number(km), Number(price));
 			if (response?.erro) {
 				setError(response.erro);
 			} else {
@@ -51,6 +52,7 @@ const router = useRouter();
 				setKm("");
 				setImagem(null);
 				setPreview(null);
+				setPrice("");
 				setTimeout(() => router.push("/dashboard/cars"), 1200);
 			}
 		} catch (err: any) {
@@ -113,7 +115,7 @@ const router = useRouter();
 					<input
 						type="text"
 						className="px-4 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
-						value={gas}
+						defaultValue={gas}
 						onChange={e => setGas(e.target.value)}
 						required
 					/>
@@ -130,17 +132,31 @@ const router = useRouter();
 					/>
 				</label>
 
-				<label className="flex flex-col gap-1">
-					<span className="text-zinc-700 font-medium">KM</span>
-					<input
-						type="number"
-						min="0"
-						className="px-4 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
-						value={km}
-						onChange={e => setKm(e.target.value)}
-						required
-					/>
-				</label>
+
+				   <label className="flex flex-col gap-1">
+					   <span className="text-zinc-700 font-medium">KM</span>
+					   <input
+						   type="number"
+						   min="0"
+						   className="px-4 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
+						   value={km}
+						   onChange={e => setKm(e.target.value)}
+						   required
+					   />
+				   </label>
+
+				   <label className="flex flex-col gap-1">
+					   <span className="text-zinc-700 font-medium">Preço (R$)</span>
+					   <input
+						   type="number"
+						   min="0"
+						   step="0.01"
+						   className="px-4 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
+						   value={price}
+						   onChange={e => setPrice(e.target.value)}
+						   required
+					   />
+				   </label>
 
 				<label className="flex flex-col gap-1">
 					<span className="text-zinc-700 font-medium">Imagem</span>

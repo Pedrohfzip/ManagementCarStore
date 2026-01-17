@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
@@ -21,7 +20,19 @@ export default function Page() {
     }
   }, [theme]);
   useEffect(() => {
-    async function fetchAuthenticatedUser() {
+    async function refreshAndFetch() {
+      try {
+        // Tenta renovar o token antes de buscar dados
+        if (typeof window !== 'undefined' && window.localStorage.getItem('token')) {
+          try {
+            // Se existir token, tenta renovar
+            await usersApi.refreshToken();
+          } catch (refreshErr) {
+            // Se falhar, pode tratar logout ou ignorar
+          }
+        }
+      } catch {}
+      // Busca usuário autenticado
       try {
         const user: any = await usersApi.getAuthenticatedUser();
         if (user.error) {
@@ -30,15 +41,11 @@ export default function Page() {
         }
         setAuthenticate(user);
       } catch (error) {
-        console.error("Erro ao buscar usuário autenticado:", error);
         setAuthenticate(false);
       }
-    }
-    fetchAuthenticatedUser();
-    async function fetchCars() {
+      // Busca carros
       try {
         const response: any = await carsApi.getAllCars();
-        console.log(response);
         setCars(response);
       } catch (err) {
         setError('Erro ao buscar carros.');
@@ -46,7 +53,7 @@ export default function Page() {
         setLoading(false);
       }
     }
-    fetchCars();
+    refreshAndFetch();
   }, []);
 
   // Top 1 carro em destaque (primeiro do array)
@@ -56,7 +63,7 @@ export default function Page() {
       <Header authenticate={authenticate} onSearch={setBusca} />
       
       {/* Botão de tema flutuante colado à direita */}
-      <div className="fixed top-20 right-5 z-50">
+      <div className="fixed top-20 right-2 z-50">
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           className="flex items-center gap-2 px-3 py-2 rounded-full shadow-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 transition hover:scale-100 text-lg"
