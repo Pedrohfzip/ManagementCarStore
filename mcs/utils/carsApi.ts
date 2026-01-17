@@ -1,3 +1,5 @@
+// Editar carro
+
 // utils/carsApi.ts
 import { get } from "http";
 import { fetcher } from "./api";
@@ -36,11 +38,37 @@ async function getCarById(carId: string) {
     credentials: "include",
   });
 }
+async function editCar(carId: string, data: { name?: string; brand?: string; year?: number; gas?: string; color?: string; km?: number; price?: number; photo?: File | null }) {
+  const formData = new FormData();
+  if (data.name) formData.append('name', data.name);
+  if (data.brand) formData.append('brand', data.brand);
+  if (data.year !== undefined) formData.append('year', String(data.year));
+  if (data.gas) formData.append('gas', data.gas);
+  if (data.color) formData.append('color', data.color);
+  if (data.km !== undefined) formData.append('km', String(data.km));
+  if (data.price !== undefined) formData.append('price', String(data.price));
+  if (data.photo) formData.append('imagem', data.photo);
+  return fetcher(`/cars/editCar/${carId}`, {
+    method: 'PUT',
+    credentials: 'include',
+    body: formData,
+  });
+}
+
+// Deletar carro
+async function deleteCar(carId: string) {
+  return fetcher(`/cars/deleteCar/${carId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+}
 
 export default {
   createCar,
   getAllCars,
   getCarById,
+  editCar,
+  deleteCar,
 };
 
 // Adicione outras funções relacionadas a carros aqui

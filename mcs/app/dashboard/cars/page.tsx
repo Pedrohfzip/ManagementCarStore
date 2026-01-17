@@ -6,6 +6,7 @@ import { FaPlus } from "react-icons/fa";
 // Importe a API de carros conforme necessário
 import carsApi from '@/utils/carsApi';
 
+
 export default function CarsDashboardPage() {
 	const [cars, setCars] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -33,6 +34,18 @@ export default function CarsDashboardPage() {
 			car.year?.toString().includes(search)
 	);
 
+	// Função para deletar carro (exemplo, ajuste conforme sua API)
+	async function handleDelete(carId: string) {
+		if (window.confirm('Tem certeza que deseja excluir este carro?')) {
+			try {
+				await carsApi.deleteCar(carId);
+				window.location.reload();
+			} catch {
+				alert('Erro ao excluir carro.');
+			}
+		}
+	}
+
 		return (
 			<div className="p-4 sm:p-8 bg-gray-50 min-h-screen overflow-x-hidden w-full max-w-screen overflow-y-auto">
 			<div className="flex items-center justify-between mb-8">
@@ -59,12 +72,44 @@ export default function CarsDashboardPage() {
 				) : filteredCars.length === 0 ? (
 					<p className="text-zinc-400">Nenhum carro encontrado.</p>
 				) : (
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-						{filteredCars.map((car) => (
-							<CarCard key={car.id} car={car} />
-						))}
+					<div className="overflow-x-auto">
+						<table className="min-w-full divide-y divide-blue-100">
+							<thead className="bg-blue-50">
+								<tr>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Foto</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Nome</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Marca</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ano</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Combustível</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">KM</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Preço</th>
+									<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ações</th>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-blue-50">
+								{filteredCars.map((car) => (
+									<tr key={car.id} className="hover:bg-blue-50 transition">
+										<td className="px-4 py-3">
+											<img src={car.photo || car.fotoUrl || "/car-placeholder.png"} alt={car.nome} className="w-20 h-14 object-cover rounded-lg border border-blue-100" />
+										</td>
+										<td className="px-4 py-3 font-semibold text-zinc-800">{car.nome || car.name}</td>
+										<td className="px-4 py-3">{car.brand || car.marca}</td>
+										<td className="px-4 py-3">{car.year || car.ano}</td>
+										<td className="px-4 py-3">{car.gas || car.combustivel}</td>
+										<td className="px-4 py-3">{car.km?.toLocaleString('pt-BR') || '-'}</td>
+										<td className="px-4 py-3 text-green-600 font-bold">R$ {Number(car.price || car.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+										<td className="px-4 py-3 flex flex-wrap gap-2">
+											<a href={`/dashboard/cars/editCar?id=${car.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition">Editar</a>
+											<button onClick={() => handleDelete(car.id)} className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition">Excluir</button>
+											<a href={`/Car?id=${car.id}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Ver Anúncio</a>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
 					</div>
 				)}
+
 			</div>
 		</div>
 	);
