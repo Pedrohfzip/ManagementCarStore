@@ -136,18 +136,28 @@ export default function Dashboard() {
                         )}
                     </section>
 
-                    {/* Carros em Destaque */}
+                    {/* Carros Cadastrados */}
                     <section className={`rounded-xl shadow p-6 border ${theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'}`}>
-                        <h2 className="text-lg font-semibold mb-4">Carros em Destaque</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {cars.length > 0 ? (
-                                cars.map((car) => (
-                                    <CarCard key={car.id} car={car} />
-                                ))
-                            ) : (
-                                <p className="col-span-full text-center">Nenhum carro encontrado.</p>
-                            )}
-                        </div>
+                        <h2 className="text-lg font-semibold mb-4">Carros Cadastrados</h2>
+                        {loading ? (
+                            <p className={theme === 'dark' ? 'text-zinc-300' : 'text-zinc-500'}>Carregando carros...</p>
+                        ) : error ? (
+                            <p className="text-red-500">{error}</p>
+                        ) : cars.length === 0 ? (
+                            <p className={theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'}>Nenhum carro encontrado.</p>
+                        ) : (
+                            <ul className="divide-y divide-gray-100 dark:divide-zinc-700">
+                                {cars.map((car, idx) => (
+                                    <li key={car.id || idx} className="py-2 flex items-center gap-3">
+                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg ${theme === 'dark' ? 'bg-zinc-900 text-green-300' : 'bg-green-100 text-green-700'}`}>{''}</div>
+                                        <div>
+                                            <div className="font-medium">{car.name || 'Carro'}</div>
+                                            <div className="text-xs" style={{ color: theme === 'dark' ? '#d1d5db' : '#64748b' }}>{car.brand}</div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </section>
                 </div>
             </main>
