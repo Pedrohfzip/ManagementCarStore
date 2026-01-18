@@ -57,41 +57,65 @@ export default function UsuariosDashboardPage() {
         ) : filteredUsers.length === 0 ? (
           <p className="text-zinc-400">Nenhum usuário encontrado.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-blue-100">
-              <thead className="bg-blue-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Foto</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Nome</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Email</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Tipo</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-blue-50">
-                {filteredUsers.map((user, idx) => (
-                  <tr key={user.id || idx} className="hover:bg-blue-50 transition">
-                    <td className="px-4 py-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg">
-                        {user.nome ? user.nome[0].toUpperCase() : '?'}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-zinc-800">{user.name || user.nome || 'Usuário'}</td>
-                    <td className="px-4 py-3">{user.email || ''}</td>
-                    <td className="px-4 py-3">{user.role || '-'}</td>
-                    <td className="px-4 py-3 flex flex-wrap gap-2">
-                      <a href={`/dashboard/usuarios/editUser?id=${user.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center gap-1" title="Editar">
-                        <FaEdit /> Editar
-                      </a>
-                      <button className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center gap-1" title="Excluir">
-                        <FaTrash /> Excluir
-                      </button>
-                    </td>
+          <>
+            {/* Tabela para telas médias e grandes */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-blue-100">
+                <thead className="bg-blue-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Nome</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Tipo</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-blue-50">
+                  {filteredUsers.map((user, idx) => (
+                    <tr key={user.id || idx} className="hover:bg-blue-50 transition">
+                      <td className="px-4 py-3 font-semibold text-zinc-800">{user.name || user.nome || 'Usuário'}</td>
+                      <td className="px-4 py-3">{user.email || ''}</td>
+                      <td className="px-4 py-3">{user.role || '-'}</td>
+                      <td className="px-4 py-3 flex flex-wrap gap-2">
+                        <a href={`/dashboard/usuarios/editUser?id=${user.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center gap-1" title="Editar">
+                          <FaEdit /> Editar
+                        </a>
+                        <button className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center gap-1" title="Excluir">
+                          <FaTrash /> Excluir
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Mini cards para telas pequenas */}
+            <div className="sm:hidden flex flex-col gap-4">
+              {filteredUsers.map((user, idx) => (
+                <div key={user.id || idx} className="rounded-xl border border-blue-100 bg-white shadow p-4 flex flex-col gap-2">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center font-bold text-blue-700 text-lg">
+                      {(user.name || user.nome || 'U')[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-zinc-800 text-base">{user.name || user.nome || 'Usuário'}</div>
+                      <div className="text-xs text-zinc-500">{user.email || ''}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs mb-2">
+                    <span className="px-2 py-1 rounded bg-blue-50 text-blue-700 font-semibold">{user.role || '-'}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <a href={`/dashboard/usuarios/editUser?id=${user.id}`} className="flex-1 px-3 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Editar">
+                      <FaEdit /> Editar
+                    </a>
+                    <button className="flex-1 px-3 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Excluir">
+                      <FaTrash /> Excluir
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

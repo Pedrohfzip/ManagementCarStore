@@ -46,7 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
       </aside>
       {/* Conteúdo principal */}
-      <main className="dashboard-content flex-1">
+      <main className="flex-1">
         {children}
       </main>
     </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import carsApi from "@/utils/carsApi";
 import { useDispatch } from "react-redux";
-import { setCars, setLoading, setError } from "../carsSlice";
+import { setCars, setLoading, setError } from "../redux/slices/carsSlice";
 import { useRouter } from "next/navigation";
 import UserMenu from "./UserMenu";
 import userProvider from "@/utils/usersApi";
