@@ -1,16 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import carsApi from "@/utils/carsApi";
 import CarCard from "../components/CarCard";
 import usersApi from "@/utils/usersApi";
+import { useSelector, useDispatch } from "react-redux";
+import { setCars, setLoading, setError } from "../carsSlice";
 
 export default function Page() {
   const [busca, setBusca] = useState("");
-  const [authenticate, setAuthenticate] = useState<any>({});
-  const [cars, setCars] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const cars = useSelector((state: any) => state.cars.list);
+  const loading = useSelector((state: any) => state.cars.loading);
+  const error = useSelector((state: any) => state.cars.error);
+  const dispatch = useDispatch();
   const [theme, setTheme] = useState<'light' | 'dark'>(typeof window !== 'undefined' && window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
 
   useEffect(() => {
@@ -25,42 +26,31 @@ export default function Page() {
         // Tenta renovar o token antes de buscar dados
         if (typeof window !== 'undefined' && window.localStorage.getItem('token')) {
           try {
-            // Se existir token, tenta renovar
             await usersApi.refreshToken();
-          } catch (refreshErr) {
-            // Se falhar, pode tratar logout ou ignorar
-          }
+          } catch (refreshErr) {}
         }
       } catch {}
-      // Busca usuário autenticado
+      // Busca carros via Redux
+      dispatch(setLoading(true));
       try {
-        const user: any = await usersApi.getAuthenticatedUser();
-        if (user.error) {
-          setAuthenticate(false);
-          return;
-        }
-        setAuthenticate(user);
-      } catch (error) {
-        setAuthenticate(false);
-      }
-      // Busca carros
-      try {
-        const response: any = await carsApi.getAllCars();
-        setCars(response);
+        const carsApiModule = await import("@/utils/carsApi");
+        const response: any = await carsApiModule.default.getAllCars();
+        dispatch(setCars(response));
+        dispatch(setError(null));
       } catch (err) {
-        setError('Erro ao buscar carros.');
+        dispatch(setError('Erro ao buscar carros.'));
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     }
     refreshAndFetch();
-  }, []);
+  }, [dispatch]);
 
   // Top 1 carro em destaque (primeiro do array)
 
     return (
     <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'}`}>
-      <Header authenticate={authenticate} onSearch={setBusca} />
+      <Header onSearch={setBusca} />
       
       {/* Botão de tema flutuante colado à direita */}
       <div className="fixed top-20 right-2 z-50">
@@ -106,12 +96,6 @@ export default function Page() {
               />
             </div>
           </div>
-          {/* Carro em destaque */}
-          <div className="flex-1 flex justify-center">
-            <div className="w-full max-w-xs md:max-w-sm">
-              <CarCard car={cars[0]} />
-            </div>
-          </div>
         </section>
 
         {/* Listagem de carros */}
@@ -123,8 +107,8 @@ export default function Page() {
             <p className="text-red-600">{error}</p>
           ) : (
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
-              {cars.length > 0 ? (
-                cars.map((car) => <CarCard key={car.id} car={car} />)
+              {cars && cars.length > 0 ? (
+                cars.map((car: any) => <CarCard key={car.id} car={car} />)
               ) : (
                 <p className="col-span-full text-center">Nenhum carro encontrado.</p>
               )}

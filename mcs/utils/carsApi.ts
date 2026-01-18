@@ -63,12 +63,24 @@ async function deleteCar(carId: string) {
   });
 }
 
+
+async function searchCars(params: { data:any}) {
+  const query = new URLSearchParams();
+  if (params.data) query.append('data', params.data);
+
+  return fetcher(`/cars/search?${query}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+}
+
 export default {
   createCar,
   getAllCars,
   getCarById,
   editCar,
   deleteCar,
+  searchCars,
 };
 
 // Adicione outras funções relacionadas a carros aqui

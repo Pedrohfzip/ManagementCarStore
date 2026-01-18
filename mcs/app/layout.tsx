@@ -1,6 +1,8 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ReduxProvider from "../components/ReduxProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,14 +41,16 @@ export default function RootLayout({
       <body
         className="antialiased"
       >
-        {/* Logo e nome do site fixos no topo para todas as páginas */}
-        <header className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 shadow text-white">
-          <img src="/favicon.ico" alt="CarStore Logo" className="w-8 h-8" />
-          <span className="text-2xl font-extrabold tracking-tight drop-shadow">CarStore</span>
-        </header>
-        <main>
-          {children}
-        </main>
+        <ReduxProvider>
+          {/* Logo e nome do site fixos no topo para todas as páginas */}
+          <header className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 shadow text-white">
+            <img src="/favicon.ico" alt="CarStore Logo" className="w-8 h-8" />
+            <span className="text-2xl font-extrabold tracking-tight drop-shadow">CarStore</span>
+          </header>
+          <main>
+            {children}
+          </main>
+        </ReduxProvider>
       </body>
     </html>
   );

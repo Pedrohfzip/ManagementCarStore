@@ -2,23 +2,67 @@
 import { FaUserCircle } from "react-icons/fa";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import carsApi from "@/utils/carsApi";
+import { useDispatch } from "react-redux";
+import { setCars, setLoading, setError } from "../carsSlice";
 import { useRouter } from "next/navigation";
 import UserMenu from "./UserMenu";
 import userProvider from "@/utils/usersApi";
 import { Search, X } from "lucide-react";
+import { data } from "autoprefixer";
 interface HeaderProps {
-  authenticate: boolean;
+  onSearch?: (value: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ authenticate }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+  const [authenticate, setAuthenticate] = useState<any>(null);
+    useEffect(() => {
+      async function fetchAuth() {
+        try {
+          if (typeof window !== 'undefined' && window.localStorage.getItem('token')) {
+            try {
+              await userProvider.refreshToken();
+            } catch (refreshErr) {}
+          }
+        } catch {}
+        try {
+          const user: any = await userProvider.getAuthenticatedUser();
+          if (user.error) {
+            setAuthenticate(false);
+            return;
+          }
+          setAuthenticate(user);
+        } catch (error) {
+          setAuthenticate(false);
+        }
+      }
+      fetchAuth();
+    }, []);
   const [searchFocus, setSearchFocus] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const onSearch = (query: string) => {
-    // Implement search logic here
+  const handleInternalSearch = async (query: any) => {
+    dispatch(setLoading(true));
+    try {
+      let result;
+      if (!query || query.trim() === "") {
+        // Busca todos os carros se o input estiver vazio
+        result = await carsApi.getAllCars();
+      } else {
+        result = await carsApi.searchCars({ data: query });
+      }
+      dispatch(setCars(result));
+      dispatch(setError(null));
+    } catch (err) {
+      dispatch(setError('Erro ao buscar carros.'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+    if (onSearch) onSearch(query);
   };
 
   const handleLogout = () => {
@@ -55,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({ authenticate }) => {
           type="text"
           placeholder="Procurar carros..."
           className={`w-full max-w-xs sm:max-w-md px-4 py-2 rounded-full border-none shadow focus:outline-none focus:ring-4 focus:ring-blue-300 text-base transition-all duration-300 ${searchFocus ? 'bg-white ring-2 ring-blue-400 scale-105' : 'bg-blue-100/80'}`}
-          onChange={e => onSearch(e.target.value)}
+          onChange={e => handleInternalSearch(e.target.value)}
           onFocus={() => setSearchFocus(true)}
           onBlur={() => setSearchFocus(false)}
           inputMode="search"
@@ -82,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({ authenticate }) => {
                 type="text"
                 placeholder="Procurar carros..."
                 className="w-full px-4 py-2 rounded-full border-none shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 text-base bg-white text-zinc-900"
-                onChange={e => onSearch(e.target.value)}
+                onChange={e => handleInternalSearch(e.target.value)}
                 onFocus={() => setSearchFocus(true)}
                 onBlur={() => setSearchFocus(false)}
                 inputMode="search"
