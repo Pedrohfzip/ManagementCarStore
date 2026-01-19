@@ -34,7 +34,7 @@ export default function CarsDashboardPage() {
 	// Extrai as marcas populares dos carros carregados
 	const popularBrands = useMemo(() => {
 		const brandCount: Record<string, number> = {};
-		cars.forEach(car => {
+		cars?.forEach(car => {
 			const brand = (car.brand || car.marca || "").trim();
 			if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
 		});
@@ -134,7 +134,7 @@ export default function CarsDashboardPage() {
 								{filteredCars.map((car) => (
 									<tr key={car.id} className="hover:bg-blue-50 transition">
 										<td className="px-4 py-3">
-											<img src={car.photo || car.fotoUrl || "/car-placeholder.png"} alt={car.nome} className="w-20 h-14 object-cover rounded-lg border border-blue-100" />
+											<img src={car.images[0]?.imageUrl || "/car-placeholder.png"} className="w-20 h-14 object-cover rounded-lg border border-blue-100" />
 										</td>
 										<td className="px-4 py-3 font-semibold text-zinc-800">{car.nome || car.name}</td>
 										<td className="px-4 py-3">{car.brand || car.marca}</td>

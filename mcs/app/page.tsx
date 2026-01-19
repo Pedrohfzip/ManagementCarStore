@@ -13,13 +13,14 @@ export default function Page() {
   const loading = useSelector((state: any) => state.cars.loading);
   const error = useSelector((state: any) => state.cars.error);
   const dispatch = useDispatch();
-  const [theme, setTheme] = useState<'light' | 'dark'>(typeof window !== 'undefined' && window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
+  const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
   const [brandFilter, setBrandFilter] = useState<string | null>(null);
 
   // Marcas populares dos carros carregados
   const popularBrands = useMemo(() => {
+    console.log(cars);
     const brandCount: Record<string, number> = {};
-    cars.forEach((car: any) => {
+    cars?.forEach((car: any) => {
       const brand = (car.brand || car.marca || "").trim();
       if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
     });
@@ -36,8 +37,16 @@ export default function Page() {
     return matchesSearch && matchesBrand;
   });
 
+  // Define o tema após o mount para evitar hydration mismatch
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (theme === null && typeof window !== 'undefined') {
+      const storedTheme = window.localStorage.getItem('theme');
+      setTheme(storedTheme === 'dark' ? 'dark' : 'light');
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (theme && typeof window !== 'undefined') {
       document.documentElement.classList.toggle('dark', theme === 'dark');
       window.localStorage.setItem('theme', theme);
     }
@@ -68,8 +77,14 @@ export default function Page() {
     refreshAndFetch();
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log(cars);
+  }, []);
+
   // Top 1 carro em destaque (primeiro do array)
 
+    // Evita renderizar até o tema ser definido no client
+    if (theme === null) return null;
     return (
     <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'}`}>
       <Header onSearch={setBusca} />
@@ -83,15 +98,11 @@ export default function Page() {
         >
           {theme === 'dark' ? (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1.5M12 19.5V21M4.219 4.219l1.061 1.061M17.657 17.657l1.061 1.061M3 12h1.5M19.5 12H21M4.219 19.781l1.061-1.061M17.657 6.343l1.061-1.061M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
-              </svg>
+              <p>Dark</p>
             </>
           ) : (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0112 21.75c-5.385 0-9.75-4.365-9.75-9.75 0-4.136 2.635-7.64 6.348-9.123a.75.75 0 01.908.37.75.75 0 01-.082.988A7.501 7.501 0 0012 19.5a7.48 7.48 0 006.516-3.574.75.75 0 01.988-.082.75.75 0 01.37.908z" />
-              </svg>
+              <p>Light</p>
             </>
           )}
         </button>
@@ -109,9 +120,9 @@ export default function Page() {
             </p>
             <div className="flex flex-col gap-2">
               {/* Cards de filtro de marca */}
-              {popularBrands.length > 0 && (
+              {cars !== null && (
                 <div className="flex flex-wrap gap-2 mb-2 justify-center md:justify-start">
-                  {popularBrands.map((brand) => (
+                  {popularBrands?.map((brand) => (
                     <BrandFilterCard
                       key={brand}
                       brand={brand}

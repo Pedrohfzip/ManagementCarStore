@@ -18,11 +18,14 @@ export default function Dashboard() {
     const [brandFilter, setBrandFilter] = useState<string | null>(null);
     // Marcas populares dos carros cadastrados
     const popularBrands = useMemo(() => {
+        console.log(cars);
         const brandCount: Record<string, number> = {};
-        cars.forEach(car => {
-            const brand = (car.brand || car.marca || "").trim();
-            if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
-        });
+        if (Array.isArray(cars) && cars.length > 0) {
+            cars.forEach(car => {
+                const brand = (car.brand || car.marca || "").trim();
+                if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+            });
+        }
         return Object.entries(brandCount)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 6)

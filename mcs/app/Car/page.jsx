@@ -1,10 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
+// Carrossel simples para imagens
 import { Calendar, Droplet, Gauge, Palette, DollarSign, Phone } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import carsApi from "@/utils/carsApi";
 
 export default function CarPage() {
+  const [activeImage, setActiveImage] = useState(1);
+
+  // Sempre que o carro mudar, reseta o índice da imagem ativa
+
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [car, setCar] = useState(null);
@@ -21,6 +26,7 @@ export default function CarPage() {
           return;
         }
         const data = await carsApi.getCarById(id);
+        console.log(data);
         setCar(data);
       } catch (err) {
         setError("Erro ao buscar carro.");
@@ -30,6 +36,7 @@ export default function CarPage() {
     }
     fetchCar();
   }, [id]);
+
 
   if (loading) {
     return (
@@ -89,28 +96,72 @@ export default function CarPage() {
 
           <div className="p-8 sm:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Coluna da esquerda - Imagem */}
+              {/* Coluna da esquerda - Carrossel de imagens */}
               <div className="space-y-6">
                 <div className="relative group">
-                  <img
-                    src={car.photo || "/car-placeholder.png"}
-                    alt={car.name}
-                    className="rounded-2xl shadow-2xl w-full h-[400px] object-cover bg-zinc-100 transition-transform duration-300 group-hover:scale-[1.02]"
-                  />
+                  {car.images.length > 0 && (
+                    <img
+                      src={car.images[activeImage]?.imageUrl}
+                      alt={car.name}
+                      className="rounded-2xl shadow-2xl w-full h-[400px] object-cover bg-zinc-100 transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                  )}
+                  {/* Botões de navegação do carrossel */}
+                  {car.images.length > 1 && (
+                    <>
+                      <button
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow z-10"
+                        onClick={() => setActiveImage((prev) => {
+                          console.log(prev);
+                          const total = car.images.length;
+                          return prev === 0 ? total - 1 : prev - 1;
+                        })}
+                        aria-label="Imagem anterior"
+                        type="button"
+                      >
+                        &#8592;
+                      </button>
+                      <button
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow z-10"
+                        onClick={() => setActiveImage((prev) => {
+                          const total = car.images.length;
+                          return prev === total - 1 ? 0 : prev + 1;
+                        })}
+                        aria-label="Próxima imagem"
+                        type="button"
+                      >
+                        &#8594;
+                      </button>
+                    </>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
 
-                {/* Galeria de miniaturas (caso tenha mais fotos) */}
+                {/* Galeria de miniaturas baseada em car.images */}
                 <div className="grid grid-cols-4 gap-3">
-                  {[1, 2, 3, 4].map((_, idx) => (
-                    <div key={idx} className="aspect-video bg-zinc-200 rounded-lg overflow-hidden hover:ring-2 ring-blue-500 transition cursor-pointer">
+                  {car.images.length > 0 ? (
+                    car.images.map((img, idx) => (
+                      <div
+                        key={img.id || idx}
+                        className={`aspect-video bg-zinc-200 rounded-lg overflow-hidden hover:ring-2 ring-blue-500 transition cursor-pointer ${activeImage === idx ? 'ring-2 ring-blue-500' : ''}`}
+                        onClick={() => setActiveImage(idx)}
+                      >
+                        <img
+                          src={img.imageUrl}
+                          alt={`Foto ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="aspect-video bg-zinc-200 rounded-lg overflow-hidden">
                       <img
                         src={car.photo || "/car-placeholder.png"}
-                        alt={`Foto ${idx + 1}`}
+                        alt="Foto única"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
 
