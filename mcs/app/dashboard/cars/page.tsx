@@ -1,10 +1,11 @@
 
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useMemo } from "react";
 import CarCard from '@/components/CarCard';
 import { FaPlus } from "react-icons/fa";
-// Importe a API de carros conforme necessário
 import carsApi from '@/utils/carsApi';
+import BrandFilterCard from '@/components/BrandFilterCard';
 
 
 export default function CarsDashboardPage() {
@@ -12,6 +13,7 @@ export default function CarsDashboardPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [search, setSearch] = useState("");
+	const [brandFilter, setBrandFilter] = useState<string | null>(null);
 
 	useEffect(() => {
 		async function fetchCars() {
@@ -27,12 +29,29 @@ export default function CarsDashboardPage() {
 		fetchCars();
 	}, []);
 
-	const filteredCars = cars.filter(
-		(car) =>
+
+	// Extrai as marcas populares dos carros carregados
+	const popularBrands = useMemo(() => {
+		const brandCount: Record<string, number> = {};
+		cars.forEach(car => {
+			const brand = (car.brand || car.marca || "").trim();
+			if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+		});
+		// Ordena por frequência e pega as 6 mais populares
+		return Object.entries(brandCount)
+			.sort((a, b) => b[1] - a[1])
+			.slice(0, 6)
+			.map(([brand]) => brand);
+	}, [cars]);
+
+	const filteredCars = cars.filter((car) => {
+		const matchesSearch =
 			car.nome?.toLowerCase().includes(search.toLowerCase()) ||
 			car.brand?.toLowerCase().includes(search.toLowerCase()) ||
-			car.year?.toString().includes(search)
-	);
+			car.year?.toString().includes(search);
+		const matchesBrand = brandFilter ? (car.brand === brandFilter || car.marca === brandFilter) : true;
+		return matchesSearch && matchesBrand;
+	});
 
 	// Função para deletar carro (exemplo, ajuste conforme sua API)
 	async function handleDelete(carId: string) {
@@ -57,13 +76,37 @@ export default function CarsDashboardPage() {
 			</div>
 
 			<div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100 mb-6 w-full max-w-7xl mx-auto overflow-x-auto">
+
 				<input
-					type="text"
-					placeholder="Buscar por nome, marca ou ano..."
-					className="w-full max-w-md px-4 py-2 rounded-full border border-blue-200 shadow focus:outline-none focus:ring-4 focus:ring-blue-100 text-base transition-all mb-4"
-					value={search}
-					onChange={e => setSearch(e.target.value)}
+						type="text"
+						placeholder="Buscar por nome, marca ou ano..."
+						className="w-full max-w-md px-4 py-2 rounded-full border border-blue-200 shadow focus:outline-none focus:ring-4 focus:ring-blue-100 text-base transition-all mb-2"
+						value={search}
+						onChange={e => setSearch(e.target.value)}
 				/>
+
+				{/* Cards de filtro de marca */}
+				{popularBrands.length > 0 && (
+					<div className="flex flex-wrap gap-2 mb-4">
+						{popularBrands.map((brand) => (
+							<BrandFilterCard
+								key={brand}
+								brand={brand}
+								selected={brandFilter === brand}
+								onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
+							/>
+						))}
+						{brandFilter && (
+							<button
+								className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+								onClick={() => setBrandFilter(null)}
+								type="button"
+							>
+								Limpar filtro
+							</button>
+						)}
+					</div>
+				)}
 
 				{loading ? (
 					<p className="text-zinc-500">Carregando carros...</p>

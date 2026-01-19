@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Header from "../components/Header";
 import CarCard from "../components/CarCard";
+import BrandFilterCard from "../components/BrandFilterCard";
 import usersApi from "@/utils/usersApi";
 import { useSelector, useDispatch } from "react-redux";
 import { setCars, setLoading, setError } from "../carsSlice";
@@ -13,6 +14,27 @@ export default function Page() {
   const error = useSelector((state: any) => state.cars.error);
   const dispatch = useDispatch();
   const [theme, setTheme] = useState<'light' | 'dark'>(typeof window !== 'undefined' && window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
+  const [brandFilter, setBrandFilter] = useState<string | null>(null);
+
+  // Marcas populares dos carros carregados
+  const popularBrands = useMemo(() => {
+    const brandCount: Record<string, number> = {};
+    cars.forEach((car: any) => {
+      const brand = (car.brand || car.marca || "").trim();
+      if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+    });
+    return Object.entries(brandCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([brand]) => brand);
+  }, [cars]);
+
+  // Carros filtrados pela marca e busca
+  const filteredCars = cars.filter((car: any) => {
+    const matchesSearch = car.nome?.toLowerCase().includes(busca.toLowerCase()) || car.brand?.toLowerCase().includes(busca.toLowerCase());
+    const matchesBrand = brandFilter ? (car.brand === brandFilter || car.marca === brandFilter) : true;
+    return matchesSearch && matchesBrand;
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -85,7 +107,29 @@ export default function Page() {
             <p className="text-lg mb-6 max-w-xl mx-auto md:mx-0">
               Explore nossa seleção de carros de alta qualidade, com as melhores condições e preços do mercado.
             </p>
-            <div className="flex justify-center md:justify-start">
+            <div className="flex flex-col gap-2">
+              {/* Cards de filtro de marca */}
+              {popularBrands.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2 justify-center md:justify-start">
+                  {popularBrands.map((brand) => (
+                    <BrandFilterCard
+                      key={brand}
+                      brand={brand}
+                      selected={brandFilter === brand}
+                      onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
+                    />
+                  ))}
+                  {brandFilter && (
+                    <button
+                      className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+                      onClick={() => setBrandFilter(null)}
+                      type="button"
+                    >
+                      Limpar filtro
+                    </button>
+                  )}
+                </div>
+              )}
               <input
                 type="text"
                 placeholder="Procurar carros por nome..."
@@ -107,8 +151,8 @@ export default function Page() {
             <p className="text-red-600">{error}</p>
           ) : (
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
-              {cars && cars.length > 0 ? (
-                cars.map((car: any) => <CarCard key={car.id} car={car} />)
+              {filteredCars && filteredCars.length > 0 ? (
+                filteredCars.map((car: any) => <CarCard key={car.id} car={car} />)
               ) : (
                 <p className="col-span-full text-center">Nenhum carro encontrado.</p>
               )}

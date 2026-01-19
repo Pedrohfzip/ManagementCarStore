@@ -2,17 +2,48 @@
 
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import userApi from '@/utils/usersApi';
 import CarCard from "@/components/CarCard";
+import BrandFilterCard from '@/components/BrandFilterCard';
 import carsApi from '@/utils/carsApi';
 
 export default function Dashboard() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [theme, setTheme] = useState<'light' | 'dark'>(typeof window !== 'undefined' && window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
+    // Inicializa sempre como 'light' para evitar mismatch SSR/CSR
+    const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [cars, setCars] = useState<any[]>([]);
+    const [brandFilter, setBrandFilter] = useState<string | null>(null);
+    // Marcas populares dos carros cadastrados
+    const popularBrands = useMemo(() => {
+        const brandCount: Record<string, number> = {};
+        cars.forEach(car => {
+            const brand = (car.brand || car.marca || "").trim();
+            if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+        });
+        return Object.entries(brandCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 6)
+            .map(([brand]) => brand);
+    }, [cars]);
+
+    // Carros filtrados pela marca
+    const filteredCars = brandFilter
+        ? cars.filter(car => (car.brand === brandFilter || car.marca === brandFilter))
+        : cars;
+
+
+    // Sincroniza tema com localStorage e html após montagem
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedTheme = window.localStorage.getItem('theme');
+            if (storedTheme === 'dark') {
+                setTheme('dark');
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -54,9 +85,9 @@ export default function Dashboard() {
         {
             label: 'Usuários Ativos',
             value: users.length,
-            icon: (
-                <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            ),
+            // icon: (
+            //     <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            // ),
         },
         {
             label: 'Carros Cadastrados',
@@ -85,9 +116,7 @@ export default function Dashboard() {
                         </>
                     ) : (
                         <>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0112 21.75c-5.385 0-9.75-4.365-9.75-9.75 0-4.136 2.635-7.64 6.348-9.123a.75.75 0 01.908.37.75.75 0 01-.082.988A7.501 7.501 0 0012 19.5a7.48 7.48 0 006.516-3.574.75.75 0 01.988-.082.75.75 0 01.37.908z" />
-                            </svg>
+                            <span className="text-yellow-400 text-xl" role="img" aria-label="Modo claro">☀️</span>
                         </>
                     )}
                 </button>
@@ -139,15 +168,37 @@ export default function Dashboard() {
                     {/* Carros Cadastrados */}
                     <section className={`rounded-xl shadow p-6 border ${theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'}`}>
                         <h2 className="text-lg font-semibold mb-4">Carros Cadastrados</h2>
+                        {/* Cards de filtro de marca */}
+                        {popularBrands.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {popularBrands.map((brand) => (
+                                    <BrandFilterCard
+                                        key={brand}
+                                        brand={brand}
+                                        selected={brandFilter === brand}
+                                        onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
+                                    />
+                                ))}
+                                {brandFilter && (
+                                    <button
+                                        className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+                                        onClick={() => setBrandFilter(null)}
+                                        type="button"
+                                    >
+                                        Limpar filtro
+                                    </button>
+                                )}
+                            </div>
+                        )}
                         {loading ? (
                             <p className={theme === 'dark' ? 'text-zinc-300' : 'text-zinc-500'}>Carregando carros...</p>
                         ) : error ? (
                             <p className="text-red-500">{error}</p>
-                        ) : cars.length === 0 ? (
+                        ) : filteredCars.length === 0 ? (
                             <p className={theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'}>Nenhum carro encontrado.</p>
                         ) : (
                             <ul className="divide-y divide-gray-100 dark:divide-zinc-700">
-                                {cars.map((car, idx) => (
+                                {filteredCars.map((car, idx) => (
                                     <li key={car.id || idx} className="py-2 flex items-center gap-3">
                                         <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg ${theme === 'dark' ? 'bg-zinc-900 text-green-300' : 'bg-green-100 text-green-700'}`}>{''}</div>
                                         <div>
