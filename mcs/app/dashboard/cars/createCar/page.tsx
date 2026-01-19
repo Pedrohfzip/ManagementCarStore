@@ -1,9 +1,10 @@
-
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import carProvider from '@/utils/carsApi';
+import { useSelector, useDispatch } from "react-redux";
+import { setImageList } from '../../../../redux/slices/carsSlice';
 
 
 export default function CreateCarPage() {
@@ -19,16 +20,20 @@ const [preview, setPreview] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState<string | null>(null);
 const [success, setSuccess] = useState(false);
+const dispatch = useDispatch();
+const imageList = useSelector((state: any) => state.cars.imageList);
 const router = useRouter();
 
+
+
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0] || null;
-		console.log(file);
-		setImagem(file);
-		if (file) {
-			setPreview(URL.createObjectURL(file));
-		} else {
-			setPreview(null);
+		const files = Array.from(e.target.files || []);
+		const currentList = Array.isArray(imageList) ? imageList : [];
+		const total = currentList.length + files.length > 10 ? 10 - currentList.length : files.length;
+		const filesToAdd = files.slice(0, total);
+		console.log(imageList);
+		if (filesToAdd.length > 0) {
+			dispatch(setImageList(filesToAdd));
 		}
 	};
 
@@ -39,21 +44,11 @@ const router = useRouter();
 		setSuccess(false);
 		console.log(preview);
 		try {
-			const response = await carProvider.createCar(name, brand, Number(year),  photo, gas, color, Number(km), Number(price));
+			const response = await carProvider.createCar(name, brand, Number(year),  imageList, gas, color, Number(km), Number(price));
 			if (response?.erro) {
 				setError(response.erro);
 			} else {
-				setSuccess(true);
-				setName("");
-				setBrand("");
-				setYear("");
-				setGas("");
-				setColor("");
-				setKm("");
-				setImagem(null);
-				setPreview(null);
-				setPrice("");
-				setTimeout(() => router.push("/dashboard/cars"), 1200);
+				// setTimeout(() => router.push("/dashboard/cars"), 1200);
 			}
 		} catch (err: any) {
 			setError(err.message || "Erro ao criar carro.");
@@ -61,7 +56,10 @@ const router = useRouter();
 			setLoading(false);
 		}
 	};
-
+	console.log(imageList);
+	useEffect(() => {
+		console.log("imageList atualizado:", imageList);
+	}, []);
 	return (
 		<div className="min-h-screen p-1 flex items-center rounded-lg justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin px-2 py-8">
 			<form
@@ -159,16 +157,22 @@ const router = useRouter();
 				   </label>
 
 				<label className="flex flex-col gap-1">
-					<span className="text-zinc-700 font-medium">Imagem</span>
+					<span className="text-zinc-700 font-medium">Imagens (até 10)</span>
 					<input
 						type="file"
 						accept="image/*"
+						multiple
 						className="px-2 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
 						onChange={handleImageChange}
-						required
+						// disabled={Array.isArray(imageList) && imageList.length >= 10}
+						key={Array.isArray(imageList) ? imageList.length : 0}
 					/>
-					{preview && (
-						<img src={preview} alt="Pré-visualização" className="mt-2 rounded-lg shadow w-full h-40 object-cover border border-blue-100" />
+					{Array.isArray(imageList) && imageList.length > 0 && (
+						<div className="mt-2 grid grid-cols-2 gap-2">
+							{imageList.map((file: File, idx: number) => (
+								<img key={idx} src={URL.createObjectURL(file)} alt={`Pré-visualização ${idx + 1}`} className="rounded-lg shadow w-full h-32 object-cover border border-blue-100" />
+							))}
+						</div>
 					)}
 				</label>
 

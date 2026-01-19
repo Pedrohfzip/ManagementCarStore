@@ -4,7 +4,7 @@
 import { get } from "http";
 import { fetcher } from "./api";
 
-async function createCar(name: string, brand: string, year: number, photo: File | null, gas: string, color: string, km: number, price: number) {
+async function createCar(name: string, brand: string, year: number, photos: [], gas: string, color: string, km: number, price: number) {
   const formData = new FormData();
   formData.append('name', name);
   formData.append('brand', brand);
@@ -15,9 +15,10 @@ async function createCar(name: string, brand: string, year: number, photo: File 
   if (price !== undefined) {
     formData.append('price', String(price));
   }
-  if (photo) {
-    formData.append('imagem', photo); // nome do campo igual ao do backend
-  }
+  // Adiciona todas as fotos
+  photos.forEach((file, idx) => {
+    formData.append('imagens', file); // backend deve aceitar array/imagens[]
+  });
 
   return fetch('http://localhost:8080/cars/createCar/', {
     method: 'POST',

@@ -5,7 +5,7 @@ import CarCard from "../components/CarCard";
 import BrandFilterCard from "../components/BrandFilterCard";
 import usersApi from "@/utils/usersApi";
 import { useSelector, useDispatch } from "react-redux";
-import { setCars, setLoading, setError } from "../carsSlice";
+import { setCars, setLoading, setError } from "../redux/slices/carsSlice";
 
 export default function Page() {
   const [busca, setBusca] = useState("");

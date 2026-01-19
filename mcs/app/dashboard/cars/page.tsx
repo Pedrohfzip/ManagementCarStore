@@ -19,6 +19,7 @@ export default function CarsDashboardPage() {
 		async function fetchCars() {
 			try {
 				const response: any = await carsApi.getAllCars();
+				console.log(response);
 				setCars(response);
 			} catch (err) {
 				setError('Erro ao buscar carros.');
