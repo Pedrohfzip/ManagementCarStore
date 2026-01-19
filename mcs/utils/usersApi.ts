@@ -43,6 +43,16 @@ async function getAllUsers() {
   });
 }
 
+async function getUserById(id: string) {
+  return fetcher(`/users/${id}`, {
+    method: 'GET',
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  });
+}
+
 async function getAuthenticatedUser() {
   return fetcher('/users/authenticatedUser', {
     method: 'GET',
@@ -71,6 +81,16 @@ async function refreshToken() {
   });
 }
 
+async function searchUsers(params: { data:any}) {
+  const query = new URLSearchParams();
+  if (params.data) query.append('data', params.data);
+
+  return fetcher(`/users/search?${query}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+}
+
 // Adicione outras funções relacionadas a usuários aqui
 
 export default {
@@ -82,6 +102,7 @@ export default {
   getAuthenticatedUser,
   logoutUser,
   refreshToken,
+  getUserById,
 };
 
 // Adicione outras funções relacionadas a usuários aqui

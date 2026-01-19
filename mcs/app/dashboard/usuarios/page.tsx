@@ -24,7 +24,7 @@ export default function UsuariosDashboardPage() {
     }
     fetchUsers();
   }, []);
-
+  console.log(users);
   const filteredUsers = users.filter(
     (user) =>
       user.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -44,10 +44,11 @@ export default function UsuariosDashboardPage() {
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100 mb-6">
         <input
           type="text"
-          placeholder="Buscar por nome ou email..."
-          className="w-full max-w-md px-4 py-2 rounded-full border border-blue-200 shadow focus:outline-none focus:ring-4 focus:ring-blue-100 text-base transition-all mb-4"
+          placeholder="Procurar usuários por nome ou email..."
+          className="w-full max-w-xs px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50 mb-4"
           value={search}
           onChange={e => setSearch(e.target.value)}
+          inputMode="search"
         />
 
         {loading ? (
@@ -76,7 +77,7 @@ export default function UsuariosDashboardPage() {
                       <td className="px-4 py-3">{user.email || ''}</td>
                       <td className="px-4 py-3">{user.role || '-'}</td>
                       <td className="px-4 py-3 flex flex-wrap gap-2">
-                        <a href={`/dashboard/usuarios/editUser?id=${user.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center gap-1" title="Editar">
+                        <a href={`/dashboard/usuarios/editUser?id=${user.uuid}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center gap-1" title="Editar">
                           <FaEdit /> Editar
                         </a>
                         <button className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center gap-1" title="Excluir">

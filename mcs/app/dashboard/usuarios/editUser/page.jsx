@@ -25,11 +25,12 @@ export default function EditUserPage() {
 
   useEffect(() => {
     async function fetchUser() {
+      console.log(id);
       if (!id) return;
       setLoading(true);
       try {
         const data = await usersApi.getUserById(id);
-        setNome(data.nome || "");
+        setNome(data.name || "");
         setEmail(data.email || "");
         setRole(data.role || roles[0].value);
       } catch (err) {
