@@ -56,9 +56,19 @@ async function editCar(carId: string, data: { name?: string; brand?: string; yea
   });
 }
 
+
 // Deletar carro
 async function deleteCar(carId: string) {
   return fetcher(`/cars/deleteCar/${carId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+}
+
+// Deletar imagem de carro
+async function deleteCarImage(carId: string, imageId: string) {
+  // Exemplo de rota: /cars/deleteCarImage?carId=...&imageId=...
+  return fetcher(`/cars/deleteCarImage/${carId}/${imageId}`, {
     method: 'DELETE',
     credentials: 'include',
   });
@@ -81,6 +91,7 @@ export default {
   getCarById,
   editCar,
   deleteCar,
+  deleteCarImage,
   searchCars,
 };
 

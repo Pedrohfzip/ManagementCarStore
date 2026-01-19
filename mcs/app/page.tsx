@@ -18,7 +18,6 @@ export default function Page() {
 
   // Marcas populares dos carros carregados
   const popularBrands = useMemo(() => {
-    console.log(cars);
     const brandCount: Record<string, number> = {};
     cars?.forEach((car: any) => {
       const brand = (car.brand || car.marca || "").trim();
@@ -144,7 +143,7 @@ export default function Page() {
               <input
                 type="text"
                 placeholder="Procurar carros por nome..."
-                className="w-full max-w-xs px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50"
+                className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'} w-full max-w-xs px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50`}
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
                 inputMode="search"

@@ -16,8 +16,10 @@ export default function EditCarPage() {
   const [color, setColor] = useState("");
   const [km, setKm] = useState("");
   const [price, setPrice] = useState("");
-  const [photo, setPhoto] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [newPhotos, setNewPhotos] = useState([]); // novas fotos para adicionar
+  const [previews, setPreviews] = useState([]); // previews das novas fotos
+  const [images, setImages] = useState([]); // imagens cadastradas
+  const [imagesToDelete, setImagesToDelete] = useState([]); // ids das imagens para excluir
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -37,6 +39,7 @@ export default function EditCarPage() {
         setKm(data.km ? String(data.km) : "");
         setPrice(data.price ? String(data.price) : data.preco ? String(data.preco) : "");
         setPreview(data.photo || data.fotoUrl || "");
+        setImages(Array.isArray(data.images) ? data.images : []);
       } catch (err) {
         setError("Erro ao buscar dados do carro.");
       } finally {
@@ -46,12 +49,21 @@ export default function EditCarPage() {
     fetchCar();
   }, [id]);
 
+  // Adicionar novas imagens (igual ao cadastro)
   const handleImageChange = (e) => {
-    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
-    setPhoto(file);
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-    }
+    const files = Array.from(e.target.files || []);
+    const total = newPhotos.length + files.length > 10 ? 10 - newPhotos.length : files.length;
+    const filesToAdd = files.slice(0, total);
+    const updatedPhotos = [...newPhotos, ...filesToAdd];
+    setNewPhotos(updatedPhotos);
+    setPreviews(updatedPhotos.map(file => URL.createObjectURL(file)));
+  };
+
+  // Excluir imagem cadastrada
+  const handleDeleteImage = async (imageId) => {
+    await carsApi.deleteCarImage(id, imageId);    
+    setImagesToDelete(prev => [...prev, imageId]);
+    setImages(prev => prev.filter(img => img.id !== imageId));
   };
 
   const handleSubmit = async (e) => {
@@ -60,6 +72,7 @@ export default function EditCarPage() {
     setError(null);
     setSuccess(false);
     try {
+      // Envia ids das imagens para excluir e novas imagens (se houver)
       const response = await carsApi.editCar(id, {
         name: name,
         brand: brand,
@@ -68,7 +81,8 @@ export default function EditCarPage() {
         color: color,
         km: Number(km),
         price: Number(price),
-        photo: photo,
+        photos: newPhotos,
+        imagesToDelete: imagesToDelete,
       });
       if (response && response.erro) {
         setError(response.erro);
@@ -183,16 +197,41 @@ export default function EditCarPage() {
           />
         </label>
 
+        {/* Imagens cadastradas */}
+        {images && (
+          <div className="flex flex-col gap-2 mb-2">
+            <span className="text-zinc-700 font-medium">Imagens cadastradas</span>
+            <div className="flex flex-wrap gap-3">
+              {images.map(img => (
+                <div key={img.id} className="relative">
+                  <img src={img.imageUrl} alt="Carro" className="rounded-lg shadow w-24 h-20 object-cover border border-blue-100" />
+                  <button
+                    type="button"
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 py-1 text-xs font-bold shadow hover:bg-red-700"
+                    onClick={() => handleDeleteImage(img.id)}
+                  >Excluir</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* Adicionar novas imagens */}
         <label className="flex flex-col gap-1">
-          <span className="text-zinc-700 font-medium">Imagem</span>
+          <span className="text-zinc-700 font-medium">Novas imagens (até 10)</span>
           <input
             type="file"
             accept="image/*"
+            multiple
             className="px-2 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
             onChange={handleImageChange}
+            key={newPhotos.length}
           />
-          {preview && (
-            <img src={preview} alt="Pré-visualização" className="mt-2 rounded-lg shadow w-full h-40 object-cover border border-blue-100" />
+          {previews.length > 0 && (
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {previews.map((src, idx) => (
+                <img key={idx} src={src} alt={`Pré-visualização ${idx + 1}`} className="rounded-lg shadow w-full h-32 object-cover border border-blue-100" />
+              ))}
+            </div>
           )}
         </label>
 
