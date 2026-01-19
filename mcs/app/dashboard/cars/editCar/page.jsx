@@ -30,6 +30,7 @@ export default function EditCarPage() {
       setLoading(true);
       try {
         const data = await carsApi.getCarById(id);
+        console.log(data);
         setCar(data);
         setName(data.nome || data.name || "");
         setBrand(data.brand || data.marca || "");
@@ -39,7 +40,7 @@ export default function EditCarPage() {
         setKm(data.km ? String(data.km) : "");
         setPrice(data.price ? String(data.price) : data.preco ? String(data.preco) : "");
         setPreview(data.photo || data.fotoUrl || "");
-        setImages(Array.isArray(data.images) ? data.images : []);
+        setImages(Array.isArray(data.images));
       } catch (err) {
         setError("Erro ao buscar dados do carro.");
       } finally {
@@ -103,7 +104,7 @@ export default function EditCarPage() {
   if (error && !car) {
     return <div className="p-8 text-center text-red-600">{error}</div>;
   }
-
+  console.log(images);
   return (
     <div className="min-h-screen p-1 flex items-center rounded-lg justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin px-2 py-8">
       <form
@@ -202,7 +203,8 @@ export default function EditCarPage() {
           <div className="flex flex-col gap-2 mb-2">
             <span className="text-zinc-700 font-medium">Imagens cadastradas</span>
             <div className="flex flex-wrap gap-3">
-              {images.map(img => (
+              {images.map((img, idx) => (
+                console.log(img),
                 <div key={img.id} className="relative">
                   <img src={img.imageUrl} alt="Carro" className="rounded-lg shadow w-24 h-20 object-cover border border-blue-100" />
                   <button
