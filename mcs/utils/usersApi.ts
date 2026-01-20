@@ -17,14 +17,14 @@ async function loginUser(email: string, senha: string) {
     body: JSON.stringify({ email, senha }),
   });
 }
-async function registerUser(name: string, email: string, senha: string) {
+async function registerUser(name: string, email: string, senha: string, role: string) {
   return fetcher('/users/register/', {
     method: 'POST',
     credentials: "include",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ name, email, senha }),
+    body: JSON.stringify({ name, email, senha, role }),
   });
 }
 async function deleteUser(userId: string) {

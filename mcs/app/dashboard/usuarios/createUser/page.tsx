@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import users from '@/utils/usersApi';
 const roles = [
 	{ value: "cliente", label: "Cliente" },
 	{ value: "administrador", label: "Administrador" },
@@ -27,7 +27,7 @@ export default function CreateUserPage() {
 		setSuccess(false);
 		try {
 			// Chama a API para criar usuário
-			const response = await require('@/utils/usersApi').default.registerUser(nome, email, senha, role);
+			const response = await users.registerUser(nome, email, senha, role);
 			if (response?.erro) {
 				setError(response.erro);
 			} else {

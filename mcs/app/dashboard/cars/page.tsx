@@ -90,7 +90,7 @@ export default function CarsDashboardPage() {
 		return (
 			<div className={`min-h-screen p-4 sm:p-8 w-full max-w-screen overflow-x-hidden overflow-y-auto ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gray-50 text-zinc-900'}`}>
 				{/* Modal de confirmação de exclusão */}
-				{showConfirm && (
+				   {showConfirm && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
 						<div className={`rounded-xl shadow-lg p-8 max-w-sm w-full ${theme === 'dark' ? 'bg-zinc-800 text-white' : 'bg-white text-zinc-900'}`}>
 							<h2 className="text-lg font-bold mb-4">Confirmar exclusão</h2>
@@ -111,7 +111,7 @@ export default function CarsDashboardPage() {
 							</div>
 						</div>
 					</div>
-				)}
+									   )}
 				{/* Botão de tema fixo no canto superior direito */}
 				<div style={{ position: 'fixed', top: 16, right: 16, zIndex: 100 }}>
 					<button
@@ -173,42 +173,70 @@ export default function CarsDashboardPage() {
 					) : filteredCars.length === 0 ? (
 						<p className="text-zinc-400">Nenhum carro encontrado.</p>
 					) : (
-						<div className="overflow-x-auto">
-							<table className={`min-w-full divide-y ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white divide-zinc-700' : 'bg-white divide-blue-100 text-zinc-900'}`}>
-								<thead className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-blue-50 text-zinc-900'}`}>
-									<tr>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Foto</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Nome</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Marca</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ano</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Combustível</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">KM</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Preço</th>
-										<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ações</th>
-									</tr>
-								</thead>
-								<tbody className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white divide-zinc-700' : 'bg-white divide-blue-50 text-zinc-900'}`}>
-									{filteredCars.map((car) => (
-										<tr key={car.id} className={theme === 'dark' ? 'hover:bg-zinc-800 transition' : 'hover:bg-blue-50 transition'}>
-											<td className="px-4 py-3">
-												<img src={car.images[0]?.imageUrl || "/car-placeholder.png"} className="w-20 h-14 object-cover rounded-lg border border-blue-100" />
-											</td>
-											<td className={`px-4 py-3 font-semibold ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-800'}`}>{car.nome || car.name}</td>
-											<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.brand || car.marca}</td>
-											<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.year || car.ano}</td>
-											<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.gas || car.combustivel}</td>
-											<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.km?.toLocaleString('pt-BR') || '-'}</td>
-											<td className={`px-4 py-3 font-bold ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`}>R$ {Number(car.price || car.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-											<td className="px-4 py-3 flex flex-wrap gap-2">
-												<a href={`/dashboard/cars/editCar?id=${car.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition">Editar</a>
-												<button onClick={() => handleDelete(car.id)} className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition">Excluir</button>
-												<a href={`/Car?id=${car.id}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Ver Anúncio</a>
-											</td>
+						<>
+							{/* Bloco Desktop: tabela */}
+							<div className="hidden sm:block overflow-x-auto">
+								<table className={`min-w-full divide-y ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white divide-zinc-700' : 'bg-white divide-blue-100 text-zinc-900'}`}>
+									<thead className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-blue-50 text-zinc-900'}`}>
+										<tr>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Foto</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Nome</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Marca</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ano</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Combustível</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">KM</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Preço</th>
+											<th className="px-4 py-3 text-left text-xs font-semibold text-blue-700 uppercase">Ações</th>
 										</tr>
-									))}
+									</thead>
+									<tbody className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white divide-zinc-700' : 'bg-white divide-blue-50 text-zinc-900'}`}>
+										{filteredCars.map((car) => (
+											<tr key={car.id} className={theme === 'dark' ? 'hover:bg-zinc-800 transition' : 'hover:bg-blue-50 transition'}>
+												<td className="px-4 py-3">
+													<img src={car.images[0]?.imageUrl || "/car-placeholder.png"} className="w-20 h-14 object-cover rounded-lg border border-blue-100" />
+												</td>
+												<td className={`px-4 py-3 font-semibold ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-800'}`}>{car.nome || car.name}</td>
+												<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.brand || car.marca}</td>
+												<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.year || car.ano}</td>
+												<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.gas || car.combustivel}</td>
+												<td className={`px-4 py-3 ${theme === 'dark' ? 'text-zinc-100' : ''}`}>{car.km?.toLocaleString('pt-BR') || '-'}</td>
+												<td className={`px-4 py-3 font-bold ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`}>R$ {Number(car.price || car.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+												   <td className="px-4 py-3 flex flex-wrap gap-2">
+													   <a href={`/dashboard/cars/editCar?id=${car.id}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition">Editar</a>
+													   <button onClick={() => handleDelete(car.id)} className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition">Excluir</button>
+													   <a href={`/Car?id=${car.id}`} target="_blank" rel="noopener noreferrer" className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Ver Anúncio</a>
+												   </td>
+											   </tr>
+										   ))}
 								</tbody>
 							</table>
-						</div>
+							</div>
+							{/* Bloco Mobile: cards */}
+							<div className="block sm:hidden">
+								<div className="flex flex-col gap-4">
+									{filteredCars.map((car) => (
+										<div key={car.id} className={`rounded-xl border border-blue-100 bg-white dark:bg-zinc-800 shadow p-4 flex flex-col gap-2`}>
+											<div className="flex items-center gap-3 mb-2">
+												<img src={car.images[0]?.imageUrl || "/car-placeholder.png"} className="w-16 h-16 object-cover rounded-lg border border-blue-100" />
+												<div>
+													<div className="font-semibold text-zinc-800 dark:text-zinc-100 text-base">{car.nome || car.name}</div>
+													<div className="text-xs text-zinc-500 dark:text-zinc-300">{car.brand || car.marca} • {car.year || car.ano}</div>
+												</div>
+											</div>
+											<div className="flex items-center gap-2 text-xs mb-2">
+												<span className="px-2 py-1 rounded bg-blue-50 text-blue-700 font-semibold">{car.gas || car.combustivel}</span>
+												<span className="px-2 py-1 rounded bg-green-50 text-green-700 font-semibold">R$ {Number(car.price || car.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+											</div>
+											<div className="flex gap-2">
+												<a href={`/dashboard/cars/editCar?id=${car.id}`} className="flex-1 px-3 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Editar">Editar</a>
+												<button onClick={() => handleDelete(car.id)} className="flex-1 px-3 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Excluir">Excluir</button>
+												<a href={`/Car?id=${car.id}`} target="_blank" rel="noopener noreferrer" className="flex-1 px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Ver Anúncio">Ver</a>
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
+						</>
 					)}
 				</div>
 			</div>

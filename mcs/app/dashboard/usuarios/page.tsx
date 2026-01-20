@@ -17,6 +17,15 @@ export default function UsuariosDashboardPage() {
       window.localStorage.setItem('theme', theme);
     }
   }, [theme]);
+  const deleteUser = async (userId: string) => {
+    if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
+    try {
+      await userApi.deleteUser(userId);
+      setUsers(users.filter(user => user.uuid !== userId));
+    } catch (err: any) {
+      alert(err.message || 'Erro ao excluir usuário.');
+    }
+  };
 
   useEffect(() => {
     async function fetchUsers() {
@@ -102,7 +111,7 @@ export default function UsuariosDashboardPage() {
                         <a href={`/dashboard/usuarios/editUser?id=${user.uuid}`} className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center gap-1" title="Editar">
                           <FaEdit /> Editar
                         </a>
-                        <button className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center gap-1" title="Excluir">
+                        <button onClick={() => deleteUser(user.uuid)} className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center gap-1" title="Excluir">
                           <FaTrash /> Excluir
                         </button>
                       </td>
@@ -128,10 +137,10 @@ export default function UsuariosDashboardPage() {
                     <span className="px-2 py-1 rounded bg-blue-50 text-blue-700 font-semibold">{user.role || '-'}</span>
                   </div>
                   <div className="flex gap-2">
-                    <a href={`/dashboard/usuarios/editUser?id=${user.id}`} className="flex-1 px-3 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Editar">
+                    <a href={`/dashboard/usuarios/editUser?id=${user.uuid}`} className="flex-1 px-3 py-2 rounded bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Editar">
                       <FaEdit /> Editar
                     </a>
-                    <button className="flex-1 px-3 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Excluir">
+                    <button onClick={() => deleteUser(user.uuid)} className="flex-1 px-3 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-xs font-bold transition flex items-center justify-center gap-1" title="Excluir">
                       <FaTrash /> Excluir
                     </button>
                   </div>
