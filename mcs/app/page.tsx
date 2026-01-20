@@ -6,7 +6,7 @@ import BrandFilterCard from "../components/BrandFilterCard";
 import usersApi from "@/utils/usersApi";
 import { useSelector, useDispatch } from "react-redux";
 import { setCars, setLoading, setError } from "../redux/slices/carsSlice";
-
+import carsApi from "@/utils/carsApi";
 export default function Page() {
   const [busca, setBusca] = useState("");
   const cars = useSelector((state: any) => state.cars.list);
@@ -15,11 +15,13 @@ export default function Page() {
   const dispatch = useDispatch();
   const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
   const [brandFilter, setBrandFilter] = useState<string | null>(null);
+  const [filtroAberto, setFiltroAberto] = useState(false);
 
   // Marcas populares dos carros carregados
   const popularBrands = useMemo(() => {
     const brandCount: Record<string, number> = {};
-    cars?.forEach((car: any) => {
+    const carList = Array.isArray(cars) ? cars : [];
+    carList.forEach((car: any) => {
       const brand = (car.brand || car.marca || "").trim();
       if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
     });
@@ -29,12 +31,37 @@ export default function Page() {
       .map(([brand]) => brand);
   }, [cars]);
 
-  // Carros filtrados pela marca e busca
-  const filteredCars = cars.filter((car: any) => {
-    const matchesSearch = car.nome?.toLowerCase().includes(busca.toLowerCase()) || car.brand?.toLowerCase().includes(busca.toLowerCase());
-    const matchesBrand = brandFilter ? (car.brand === brandFilter || car.marca === brandFilter) : true;
-    return matchesSearch && matchesBrand;
-  });
+
+  // Busca carros do backend usando searchCars, combinando busca e marca
+  useEffect(() => {
+    const fetchFilteredCars = async () => {
+      dispatch(setLoading(true));
+      try {
+        // Monta os filtros para a query
+        let params: any = {};
+        if (busca && !isNaN(Number(busca)) && busca.length === 4) {
+          params.year = busca;
+        } else if (busca) {
+          params.name = busca;
+        }
+        if (brandFilter) params.brand = brandFilter;
+        if (!busca && !brandFilter) {
+          const all = await carsApi.getAllCars();
+          dispatch(setCars(all));
+          dispatch(setError(null));
+        } else {
+          const result = await carsApi.searchCars(params);
+          dispatch(setCars(result));
+          dispatch(setError(null));
+        }
+      } catch (err) {
+        dispatch(setError('Erro ao buscar carros.'));
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+    fetchFilteredCars();
+  }, [busca, brandFilter]);
 
   // Define o tema após o mount para evitar hydration mismatch
   useEffect(() => {
@@ -65,6 +92,7 @@ export default function Page() {
       try {
         const carsApiModule = await import("@/utils/carsApi");
         const response: any = await carsApiModule.default.getAllCars();
+        console.log('Carros carregados:', response);
         dispatch(setCars(response));
         dispatch(setError(null));
       } catch (err) {
@@ -107,53 +135,108 @@ export default function Page() {
         </button>
       </div>
 
-      <main className="flex-1 w-full max-w-7xl mx-auto pt-28 pb-10 px-2 sm:px-6">
-        {/* Hero Section */}
-        <section className="mb-10 flex flex-col md:flex-row items-center gap-8 md:gap-16">
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl sm:text-5xl font-extrabold mb-4 leading-tight">
-              Encontre o carro perfeito para você
-            </h1>
-            <p className="text-lg mb-6 max-w-xl mx-auto md:mx-0">
-              Explore nossa seleção de carros de alta qualidade, com as melhores condições e preços do mercado.
-            </p>
-            <div className="flex flex-col gap-2">
-              {/* Cards de filtro de marca */}
-              {cars !== null && (
-                <div className="flex flex-wrap gap-2 mb-2 justify-center md:justify-start">
-                  {popularBrands?.map((brand) => (
-                    <BrandFilterCard
-                      key={brand}
-                      brand={brand}
-                      selected={brandFilter === brand}
-                      onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
-                    />
-                  ))}
-                  {brandFilter && (
-                    <button
-                      className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
-                      onClick={() => setBrandFilter(null)}
-                      type="button"
-                    >
-                      Limpar filtro
-                    </button>
-                  )}
-                </div>
-              )}
-              <input
-                type="text"
-                placeholder="Procurar carros por nome..."
-                className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'} w-full max-w-xs px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50`}
-                value={busca}
-                onChange={e => setBusca(e.target.value)}
-                inputMode="search"
-              />
-            </div>
+      <main className={`flex-1 w-full max-w-7xl mx-auto pt-28 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center'}`}>
+        {/* Botão para abrir filtro no mobile */}
+        <button
+          className="sm:hidden fixed left-2 top-24 z-30 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg"
+          onClick={() => setFiltroAberto(true)}
+          aria-label="Abrir filtros"
+        >
+          Filtros
+        </button>
+        {/* Filtro flutuante como modal no mobile */}
+        {filtroAberto && (
+          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 sm:hidden">
+            <aside className="bg-white dark:bg-zinc-800 rounded-xl shadow-2xl p-6 w-[90vw] max-w-xs flex flex-col gap-6 relative animate-fadeIn">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-bold">Buscar e Filtrar</h2>
+                <button
+                  className="text-zinc-700 dark:text-zinc-200 text-2xl px-2"
+                  onClick={() => setFiltroAberto(false)}
+                  aria-label="Fechar filtros"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Nome do carro</h3>
+                <input
+                  type="text"
+                  placeholder="Procurar carros por nome..."
+                  className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'} w-full px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50`}
+                  value={busca}
+                  onChange={e => setBusca(e.target.value)}
+                  inputMode="search"
+                />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Marcas</h3>
+                {cars !== null && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {popularBrands?.map((brand) => (
+                      <BrandFilterCard
+                        key={brand}
+                        brand={brand}
+                        selected={brandFilter === brand}
+                        onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
+                      />
+                    ))}
+                    {brandFilter && (
+                      <button
+                        className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+                        onClick={() => setBrandFilter(null)}
+                        type="button"
+                      >
+                        Limpar filtro
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </aside>
           </div>
-        </section>
-
-        {/* Listagem de carros */}
-        <section>
+        )}
+        {/* Filtro lateral fixo no desktop */}
+        <aside className="sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex">
+          <h2 className="text-lg font-bold mb-2">Buscar e Filtrar</h2>
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Nome do carro</h3>
+            <input
+              type="text"
+              placeholder="Procurar carros por nome..."
+              className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'} w-full px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50`}
+              value={busca}
+              onChange={e => setBusca(e.target.value)}
+              inputMode="search"
+            />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Marcas</h3>
+            {cars !== null && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {popularBrands?.map((brand) => (
+                  <BrandFilterCard
+                    key={brand}
+                    brand={brand}
+                    selected={brandFilter === brand}
+                    onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
+                  />
+                ))}
+                {brandFilter && (
+                  <button
+                    className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+                    onClick={() => setBrandFilter(null)}
+                    type="button"
+                  >
+                    Limpar filtro
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </aside>
+        {/* Catálogo de carros rolável */}
+        <section className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 7rem)' }}>
           <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center sm:text-left">Todos os carros</h2>
           {loading ? (
             <p>Carregando carros...</p>
@@ -161,8 +244,8 @@ export default function Page() {
             <p className="text-red-600">{error}</p>
           ) : (
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
-              {filteredCars && filteredCars.length > 0 ? (
-                filteredCars.map((car: any) => <CarCard key={car.id} car={car} />)
+              {cars && cars.length > 0 ? (
+                cars.map((car: any) => <CarCard key={car.id} car={car} />)
               ) : (
                 <p className="col-span-full text-center">Nenhum carro encontrado.</p>
               )}

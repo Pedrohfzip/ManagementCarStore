@@ -93,82 +93,39 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-to-br from-yellow-400 to-pink-500 rounded-full animate-pulse group-hover:scale-125 transition-transform" />
       </a>
 
-      {/* Campo de busca desktop (>=640px) */}
-      <div className="hidden sm:flex flex-1 justify-center mx-2">
-        <input
-          type="text"
-          placeholder="Procurar carros..."
-          className={`w-full max-w-xs sm:max-w-md px-4 py-2 rounded-full border-none shadow focus:outline-none focus:ring-4 focus:ring-blue-300 text-base transition-all duration-300 ${searchFocus ? 'bg-white ring-2 ring-blue-400 scale-105' : 'bg-blue-100/80'}`}
-          onChange={e => handleInternalSearch(e.target.value)}
-          onFocus={() => setSearchFocus(true)}
-          onBlur={() => setSearchFocus(false)}
-          inputMode="search"
-        />
-      </div>
-
-      {/* Ícone de busca mobile (<640px) */}
-      <div className="flex sm:hidden flex-1 justify-center">
-        <div className="relative">
-          <button
-            onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-            className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20"
-            aria-label="Abrir busca"
-          >
-            {mobileSearchOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Search className="w-5 h-5" />
-            )}
-          </button>
-          {mobileSearchOpen && (
-            <div className="absolute top-full mt-2 right-0   w-40 animate-fadeIn z-50">
-              <input
-                type="text"
-                placeholder="Procurar carros..."
-                className="w-full px-4 py-2 rounded-full border-none shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 text-base bg-white text-zinc-900"
-                onChange={e => handleInternalSearch(e.target.value)}
-                onFocus={() => setSearchFocus(true)}
-                onBlur={() => setSearchFocus(false)}
-                inputMode="search"
-                autoFocus
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {authenticate && (
+      <div className="flex items-center gap-2">
         <button
-          className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm rounded-full bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20 mr-2"
-          style={{ boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)' }}
+          className="text-2xl text-white hover:text-yellow-300 transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full"
+          style={{ minWidth: 36, minHeight: 36 }}
           onClick={() => {
-            if (typeof window !== 'undefined') {
-              window.location.assign('/dashboard');
+            if (authenticate) {
+              setMenuOpen(!menuOpen);
+            } else {
+              if (typeof window !== 'undefined') {
+                window.location.assign('/login');
+              }
             }
           }}
+          aria-label={authenticate ? "Abrir menu do usuário" : "Ir para login"}
+          type="button"
         >
-          <span className="hidden sm:inline">Dashboard</span>
-          <span className="sm:hidden">DB</span>
+          <FaUserCircle className="drop-shadow" />
         </button>
-      )}
-      <button
-        className="text-2xl text-white hover:text-yellow-300 transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full"
-        style={{ minWidth: 36, minHeight: 36 }}
-        onClick={() => {
-          if (authenticate) {
-            setMenuOpen(!menuOpen);
-          } else {
-            if (typeof window !== 'undefined') {
-              window.location.assign('/login');
-            }
-          }
-        }}
-        aria-label={authenticate ? "Abrir menu do usuário" : "Ir para login"}
-        type="button"
-      >
-        <FaUserCircle className="drop-shadow" />
-      </button>
-
+        {authenticate && (
+          <button
+            className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm rounded-full bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20"
+            style={{ boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)' }}
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.assign('/dashboard');
+              }
+            }}
+          >
+            <span className="hidden sm:inline">Dashboard</span>
+            <span className="sm:hidden">DB</span>
+          </button>
+        )}
+      </div>
       <UserMenu
         open={!!menuOpen && !!authenticate}
         onClose={() => setMenuOpen(false)}

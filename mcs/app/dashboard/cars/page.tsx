@@ -29,10 +29,23 @@ export default function CarsDashboardPage() {
 
 	useEffect(() => {
 		async function fetchCars() {
+			setLoading(true);
 			try {
-				const response: any = await carsApi.getAllCars();
-				console.log(response);
+				let params: any = {};
+				if (search && !isNaN(Number(search)) && search.length === 4) {
+					params.year = search;
+				} else if (search) {
+					params.name = search;
+				}
+				if (brandFilter) params.brand = brandFilter;
+				let response;
+				if (!search && !brandFilter) {
+					response = await carsApi.getAllCars();
+				} else {
+					response = await carsApi.searchCars(params);
+				}
 				setCars(response);
+				setError(null);
 			} catch (err) {
 				setError('Erro ao buscar carros.');
 			} finally {
@@ -40,7 +53,7 @@ export default function CarsDashboardPage() {
 			}
 		}
 		fetchCars();
-	}, []);
+	}, [search, brandFilter]);
 
 
 	// Extrai as marcas populares dos carros carregados

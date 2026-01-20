@@ -7,7 +7,7 @@ export default function CarCard({ car }: { car: any }) {
       {/* Imagem do carro */}
       <div className="relative h-48 overflow-hidden bg-slate-200">
         <img 
-          src={car?.images[0]?.imageUrl || "/car-placeholder.png"}
+          src={Array.isArray(car?.images) && car.images.length > 0 ? car.images[0].imageUrl : "/car-placeholder.png"}
           alt={`${car?.brand || car?.marca} ${car?.name || car?.nome}`}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />

@@ -101,7 +101,7 @@ export default function CarPage() {
                 <div className="relative group">
                   {car.images.length > 0 && (
                     <img
-                      src={car.images[activeImage]?.imageUrl}
+                      src={car.images[activeImage]?.imageUrl || car.images[0].imageUrl}
                       alt={car.name}
                       className="rounded-2xl shadow-2xl w-full h-[400px] object-cover bg-zinc-100 transition-transform duration-300 group-hover:scale-[1.02]"
                     />
