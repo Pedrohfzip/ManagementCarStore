@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import carsApi from '@/utils/carsApi';
-
+import { useSelector, useDispatch } from "react-redux";
+import { setImageList, setNewPhotos } from "@/redux/slices/carsSlice";
 export default function EditCarPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -16,14 +17,15 @@ export default function EditCarPage() {
   const [color, setColor] = useState("");
   const [km, setKm] = useState("");
   const [price, setPrice] = useState("");
-  const [newPhotos, setNewPhotos] = useState([]); // novas fotos para adicionar
+  // const [newPhotos, setNewPhotos] = useState([]); // novas fotos para adicionar
   const [previews, setPreviews] = useState([]); // previews das novas fotos
-  const [images, setImages] = useState([]); // imagens cadastradas
+  const imageList = useSelector((state) => state.cars.imageList);
+  const newPhotosRedux = useSelector((state) => state.cars.newPhotos);
   const [imagesToDelete, setImagesToDelete] = useState([]); // ids das imagens para excluir
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     async function fetchCar() {
       if (!id) return;
@@ -40,7 +42,7 @@ export default function EditCarPage() {
         setKm(data.km ? String(data.km) : "");
         setPrice(data.price ? String(data.price) : data.preco ? String(data.preco) : "");
         setPreview(data.photo || data.fotoUrl || "");
-        setImages(Array.isArray(data.images));
+        dispatch(setImageList(data.images));  
       } catch (err) {
         setError("Erro ao buscar dados do carro.");
       } finally {
@@ -53,11 +55,11 @@ export default function EditCarPage() {
   // Adicionar novas imagens (igual ao cadastro)
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files || []);
-    const total = newPhotos.length + files.length > 10 ? 10 - newPhotos.length : files.length;
+    const total = newPhotosRedux.length + files.length > 10 ? 10 - newPhotosRedux.length : files.length;
     const filesToAdd = files.slice(0, total);
-    const updatedPhotos = [...newPhotos, ...filesToAdd];
-    setNewPhotos(updatedPhotos);
-    setPreviews(updatedPhotos.map(file => URL.createObjectURL(file)));
+    const updatedPhotos = [...newPhotosRedux, ...filesToAdd];
+    dispatch(setNewPhotos(updatedPhotos));
+    // setPreviews(updatedPhotos.map(file => URL.createObjectURL(file)));
   };
 
   // Excluir imagem cadastrada
@@ -68,6 +70,7 @@ export default function EditCarPage() {
   };
 
   const handleSubmit = async (e) => {
+    console.log(imageList);
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -82,8 +85,7 @@ export default function EditCarPage() {
         color: color,
         km: Number(km),
         price: Number(price),
-        photos: newPhotos,
-        imagesToDelete: imagesToDelete,
+        photo: Array.isArray(newPhotosRedux) ? newPhotosRedux : [],
       });
       if (response && response.erro) {
         setError(response.erro);
@@ -98,13 +100,13 @@ export default function EditCarPage() {
     }
   };
 
-  if (loading && !car) {
-    return <div className="p-8 text-center">Carregando...</div>;
-  }
-  if (error && !car) {
-    return <div className="p-8 text-center text-red-600">{error}</div>;
-  }
-  console.log(images);
+  // if (loading && !car) {
+  //   return <div className="p-8 text-center">Carregando...</div>;
+  // }
+  // if (error && !car) {
+  //   return <div className="p-8 text-center text-red-600">{error}</div>;
+  // }
+  console.log(newPhotosRedux);
   return (
     <div className="min-h-screen p-1 flex items-center rounded-lg justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin px-2 py-8">
       <form
@@ -199,11 +201,11 @@ export default function EditCarPage() {
         </label>
 
         {/* Imagens cadastradas */}
-        {images && (
+        {imageList && (
           <div className="flex flex-col gap-2 mb-2">
             <span className="text-zinc-700 font-medium">Imagens cadastradas</span>
             <div className="flex flex-wrap gap-3">
-              {images.map((img, idx) => (
+              {imageList.map((img, idx) => (
                 console.log(img),
                 <div key={img.id} className="relative">
                   <img src={img.imageUrl} alt="Carro" className="rounded-lg shadow w-24 h-20 object-cover border border-blue-100" />
@@ -226,7 +228,7 @@ export default function EditCarPage() {
             multiple
             className="px-2 py-2 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-blue-50 text-zinc-900"
             onChange={handleImageChange}
-            key={newPhotos.length}
+            key={newPhotosRedux.length}
           />
           {previews.length > 0 && (
             <div className="mt-2 grid grid-cols-2 gap-2">

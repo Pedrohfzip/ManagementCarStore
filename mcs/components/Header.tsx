@@ -10,11 +10,13 @@ import UserMenu from "./UserMenu";
 import userProvider from "@/utils/usersApi";
 import { Search, X } from "lucide-react";
 import { data } from "autoprefixer";
+
 interface HeaderProps {
   onSearch?: (value: string) => void;
+  theme?: 'light' | 'dark';
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, theme = 'light' }) => {
   const [authenticate, setAuthenticate] = useState<any>(null);
     useEffect(() => {
       async function fetchAuth() {
@@ -41,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const [searchFocus, setSearchFocus] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  // O tema agora é controlado via prop
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -75,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   return (
     <header
-      className="w-full fixed top-0 left-0 z-30 flex items-center justify-between py-4 px-3 sm:px-10 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 shadow-lg animate-fadeIn"
+      className={`w-full fixed top-0 left-0 z-30 flex items-center justify-between py-4 px-3 sm:px-10 shadow-lg animate-fadeIn ${theme === 'dark' ? 'bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-700' : 'bg-gradient-to-r from-zinc-100 via-white to-zinc-50'}`}
       style={{
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
@@ -84,18 +86,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
     >
       {/* Logo animada */}
       <a href="/" className="flex items-center gap-2 group">
-        <span className="hidden sm:inline text-2xl sm:text-3xl font-extrabold text-white tracking-tight drop-shadow animate-slideDown">
+        <span className={`hidden sm:inline text-2xl sm:text-3xl font-extrabold tracking-tight drop-shadow animate-slideDown ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}> 
           CarStore
         </span>
-        <span className="inline sm:hidden text-lg font-extrabold text-white tracking-tight drop-shadow animate-slideDown">
+        <span className={`inline sm:hidden text-lg font-extrabold tracking-tight drop-shadow animate-slideDown ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}> 
           CS
         </span>
-        <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-to-br from-yellow-400 to-pink-500 rounded-full animate-pulse group-hover:scale-125 transition-transform" />
+        <span className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full animate-pulse group-hover:scale-125 transition-transform ${theme === 'dark' ? 'bg-gradient-to-br from-yellow-400 to-pink-600' : 'bg-gradient-to-br from-yellow-400 to-pink-500'}`} />
       </a>
 
       <div className="flex items-center gap-2">
         <button
-          className="text-2xl text-white hover:text-yellow-300 transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full"
+          className={`text-2xl transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full ${theme === 'dark' ? 'text-zinc-100 hover:text-yellow-300' : 'text-zinc-700 hover:text-yellow-600'}`}
           style={{ minWidth: 36, minHeight: 36 }}
           onClick={() => {
             if (authenticate) {
@@ -113,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         </button>
         {authenticate && (
           <button
-            className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm rounded-full bg-white/10 text-white font-semibold shadow hover:bg-white/20 transition-colors duration-200 backdrop-blur-md border border-white/20"
+            className={`px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm rounded-full font-semibold shadow transition-colors duration-200 backdrop-blur-md border ${theme === 'dark' ? 'bg-zinc-700/40 text-zinc-100 hover:bg-zinc-700/60 border-zinc-400/20' : 'bg-zinc-200/60 text-zinc-900 hover:bg-zinc-300/80 border-zinc-300/40'}`}
             style={{ boxShadow: '0 2px 12px 0 rgba(0,0,0,0.08)' }}
             onClick={() => {
               if (typeof window !== 'undefined') {

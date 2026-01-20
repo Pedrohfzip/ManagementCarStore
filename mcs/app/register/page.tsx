@@ -28,8 +28,9 @@ export default function RegisterPage() {
 		setLoading(true);
 		setError(null);
 		setSuccess(false);
+		const role = "cliente"; // Define o papel padrão como "cliente"
 		try {
-			const response: RegisterResponse = await loginProvider.registerUser(name, email, senha);
+			const response: RegisterResponse = await loginProvider.registerUser(name, email, senha, role );
 			if (response?.erro) {
 				setError(response.erro);
 				setNotif({ message: response.erro, type: "error" });

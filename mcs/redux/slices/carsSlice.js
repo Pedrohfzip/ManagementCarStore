@@ -4,6 +4,7 @@ const initialState = {
   list: [],
   loading: false,
   imageList: [],
+  newPhotos: [], // novas imagens (Files)
   error: null,
 };
 
@@ -18,8 +19,10 @@ const carsSlice = createSlice({
       state.loading = action.payload;
     },
     setImageList(state, action) {
-      // Acumula as fotos no array
-      state.imageList = [...state.imageList, ...action.payload];
+      state.imageList = Array.isArray(action.payload) ? action.payload : [];
+    },
+    setNewPhotos(state, action) {
+      state.newPhotos = Array.isArray(action.payload) ? action.payload : [];
     },
     setError(state, action) {
       state.error = action.payload;
@@ -27,5 +30,5 @@ const carsSlice = createSlice({
   },
 });
 
-export const { setCars, setLoading, setImageList, setError } = carsSlice.actions;
+export const { setCars, setLoading, setImageList, setNewPhotos, setError } = carsSlice.actions;
 export default carsSlice.reducer;

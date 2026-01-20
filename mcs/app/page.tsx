@@ -114,7 +114,7 @@ export default function Page() {
     if (theme === null) return null;
     return (
     <div className={`min-h-screen flex flex-col ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'}`}>
-      <Header onSearch={setBusca} />
+      <Header onSearch={setBusca} theme={theme} />
       
       {/* Botão de tema flutuante colado à direita */}
       <div className="fixed top-20 right-2 z-50">
@@ -135,23 +135,26 @@ export default function Page() {
         </button>
       </div>
 
-      <main className={`flex-1 w-full max-w-7xl mx-auto pt-28 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center'}`}>
+      <main className={`flex-1 w-full  mx-auto pt-28 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center'}`}>
         {/* Botão para abrir filtro no mobile */}
         <button
-          className="sm:hidden fixed left-2 top-24 z-30 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg"
+          className="sm:hidden fixed left-2 top-24 z-30 flex items-center gap-2 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white px-5 py-3 rounded-full shadow-2xl border-2 border-blue-300 font-bold text-base tracking-wide hover:scale-105 hover:from-blue-700 hover:to-blue-500 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
           onClick={() => setFiltroAberto(true)}
           aria-label="Abrir filtros"
         >
-          Filtros
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 mr-1">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+          </svg>
+          Buscar / Filtros
         </button>
         {/* Filtro flutuante como modal no mobile */}
         {filtroAberto && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 sm:hidden">
-            <aside className="bg-white dark:bg-zinc-800 rounded-xl shadow-2xl p-6 w-[90vw] max-w-xs flex flex-col gap-6 relative animate-fadeIn">
+            <aside className={`${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'} rounded-xl shadow-2xl p-6 w-[90vw] max-w-xs flex flex-col gap-6 relative animate-fadeIn`}>
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-bold">Buscar e Filtrar</h2>
+                <h2 className={`text-lg font-bold ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>Buscar e Filtrar</h2>
                 <button
-                  className="text-zinc-700 dark:text-zinc-200 text-2xl px-2"
+                  className={`text-2xl px-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}
                   onClick={() => setFiltroAberto(false)}
                   aria-label="Fechar filtros"
                 >
@@ -159,18 +162,18 @@ export default function Page() {
                 </button>
               </div>
               <div className="mb-4">
-                <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Nome do carro</h3>
+                <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Nome do carro</h3>
                 <input
                   type="text"
                   placeholder="Procurar carros por nome..."
-                  className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'} w-full px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50`}
+                  className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white border-zinc-700' : 'bg-gradient-to-br from-zinc-100 via-white to-zinc-50 text-zinc-900 border-zinc-200'} w-full px-4 py-3 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base border`}
                   value={busca}
                   onChange={e => setBusca(e.target.value)}
                   inputMode="search"
                 />
               </div>
               <div>
-                <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Marcas</h3>
+                <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Marcas</h3>
                 {cars !== null && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {popularBrands?.map((brand) => (
@@ -183,7 +186,7 @@ export default function Page() {
                     ))}
                     {brandFilter && (
                       <button
-                        className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+                        className={`px-3 py-2 rounded-lg border text-xs font-semibold ml-2 ${theme === 'dark' ? 'border-blue-900 bg-zinc-900 text-blue-200' : 'border-blue-200 bg-white text-blue-700'}`}
                         onClick={() => setBrandFilter(null)}
                         type="button"
                       >
@@ -197,21 +200,21 @@ export default function Page() {
           </div>
         )}
         {/* Filtro lateral fixo no desktop */}
-        <aside className="sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex">
-          <h2 className="text-lg font-bold mb-2">Buscar e Filtrar</h2>
+        <aside className={`sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs rounded-xl  p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex ${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>
+          <h2 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>Buscar e Filtrar</h2>
           <div className="mb-4">
-            <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Nome do carro</h3>
+            <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Nome do carro</h3>
             <input
               type="text"
               placeholder="Procurar carros por nome..."
-              className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'} w-full px-4 py-3 dark:border-zinc-700 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-zinc-50`}
+              className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white border-zinc-700' : 'bg-gradient-to-br from-zinc-100 via-white to-zinc-50 text-zinc-900 border-zinc-200'} w-full px-4 py-3 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base border`}
               value={busca}
               onChange={e => setBusca(e.target.value)}
               inputMode="search"
             />
           </div>
           <div>
-            <h3 className="text-sm font-semibold mb-2 text-zinc-700 dark:text-zinc-200">Marcas</h3>
+            <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Marcas</h3>
             {cars !== null && (
               <div className="flex flex-wrap gap-2 mb-2">
                 {popularBrands?.map((brand) => (
@@ -224,7 +227,7 @@ export default function Page() {
                 ))}
                 {brandFilter && (
                   <button
-                    className="px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-700 text-xs font-semibold ml-2"
+                    className={`px-3 py-2 rounded-lg border text-xs font-semibold ml-2 ${theme === 'dark' ? 'border-blue-900 bg-zinc-900 text-blue-200' : 'border-blue-200 bg-white text-blue-700'}`}
                     onClick={() => setBrandFilter(null)}
                     type="button"
                   >

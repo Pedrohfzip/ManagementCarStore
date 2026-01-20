@@ -39,7 +39,8 @@ async function getCarById(carId: string) {
     credentials: "include",
   });
 }
-async function editCar(carId: string, data: { name?: string; brand?: string; year?: number; gas?: string; color?: string; km?: number; price?: number; photo?: File | null }) {
+async function editCar(carId: string, data: { name?: string; brand?: string; year?: number; gas?: string; color?: string; km?: number; price?: number; photo?: []}) {
+  console.log(data.photo);
   const formData = new FormData();
   if (data.name) formData.append('name', data.name);
   if (data.brand) formData.append('brand', data.brand);
@@ -48,7 +49,12 @@ async function editCar(carId: string, data: { name?: string; brand?: string; yea
   if (data.color) formData.append('color', data.color);
   if (data.km !== undefined) formData.append('km', String(data.km));
   if (data.price !== undefined) formData.append('price', String(data.price));
-  if (data.photo) formData.append('imagem', data.photo);
+  if (data.photo) {
+    data.photo.forEach((file, idx) => {
+      formData.append('imagens', file); // backend deve aceitar array/imagens[]
+    });
+  }
+
   return fetcher(`/cars/editCar/${carId}`, {
     method: 'PUT',
     credentials: 'include',
