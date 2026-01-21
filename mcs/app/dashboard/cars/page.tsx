@@ -6,6 +6,7 @@ import CarCard from '@/components/CarCard';
 import { FaPlus } from "react-icons/fa";
 import carsApi from '@/utils/carsApi';
 import BrandFilterCard from '@/components/BrandFilterCard';
+import CarFilterBar from '@/components/CarFilterBar';
 
 
 
@@ -147,37 +148,16 @@ export default function CarsDashboardPage() {
 					</a>
 				</div>
 
-				<div className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-white text-zinc-900'} rounded-2xl shadow-lg p-6  mb-6 w-full max-w-7xl mx-auto overflow-x-auto`}>
-					<input
-						type="text"
-						placeholder="Buscar por nome, marca ou ano..."
-						className={`w-full max-w-md px-4 py-2 rounded-full border shadow focus:outline-none focus:ring-4 text-base transition-all mb-2 ${theme === 'dark' ? 'border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'border-blue-200 bg-white text-zinc-900 focus:ring-blue-100'}`}
-						value={search}
-						onChange={e => setSearch(e.target.value)}
-					/>
-
-					{/* Cards de filtro de marca */}
-					{popularBrands.length > 0 && (
-						<div className="flex flex-wrap gap-2 mb-4">
-							{popularBrands.map((brand) => (
-								<BrandFilterCard
-									key={brand}
-									brand={brand}
-									selected={brandFilter === brand}
-									onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
-								/>
-							))}
-							{brandFilter && (
-								<button
-									className={`px-3 py-2 rounded-lg border text-xs font-semibold ml-2 ${theme === 'dark' ? 'border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'border-blue-200 bg-white text-blue-700'}`}
-									onClick={() => setBrandFilter(null)}
-									type="button"
-								>
-									Limpar filtro
-								</button>
-							)}
-						</div>
-					)}
+				<div className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-white text-zinc-900'} rounded-2xl shadow-lg p-6  mb-6 w-full overflow-x-auto`}>
+				   {/* Filtro de carros como componente */}
+				   <CarFilterBar
+					   search={search}
+					   setSearch={setSearch}
+					   brandFilter={brandFilter}
+					   setBrandFilter={setBrandFilter}
+					   popularBrands={popularBrands}
+					   theme={theme}
+				   />
 
 					{loading ? (
 						<p className="text-zinc-500">Carregando carros...</p>

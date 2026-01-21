@@ -125,7 +125,7 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            <main className="flex-1 w-full max-w-7xl mx-auto pt-28 pb-10 px-2 sm:px-6">
+            <main className="flex-1 w-full pt-28 pb-10 px-2 sm:px-6">
                 <h1 className="text-2xl sm:text-3xl font-bold mb-8">Dashboard</h1>
 
                 {/* Estatísticas rápidas */}
@@ -157,9 +157,9 @@ export default function Dashboard() {
                             <ul className="divide-y divide-gray-100 dark:divide-zinc-700">
                                 {users.map((user, idx) => (
                                     <li key={user.id || idx} className="py-2 flex items-center gap-3">
-                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg ${theme === 'dark' ? 'bg-zinc-900 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>{user.nome ? user.nome[0].toUpperCase() : '?'}</div>
+                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg ${theme === 'dark' ? 'bg-zinc-900 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>{user.name ? user.name[0].toUpperCase() : '?'}</div>
                                         <div>
-                                            <div className="font-medium">{user.nome || 'Usuário'}</div>
+                                            <div className="font-medium">{user.name || 'Usuário'}</div>
                                             <div className="text-xs" style={{ color: theme === 'dark' ? '#d1d5db' : '#64748b' }}>{user.email || ''}</div>
                                         </div>
                                     </li>

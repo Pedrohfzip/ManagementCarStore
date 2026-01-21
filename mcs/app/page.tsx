@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import Header from "../components/Header";
 import CarCard from "../components/CarCard";
 import BrandFilterCard from "../components/BrandFilterCard";
+import HomeFilterModal from "../components/HomeFilterModal";
 import usersApi from "@/utils/usersApi";
 import { useSelector, useDispatch } from "react-redux";
 import { setCars, setLoading, setError } from "../redux/slices/carsSlice";
@@ -149,55 +150,15 @@ export default function Page() {
         </button>
         {/* Filtro flutuante como modal no mobile */}
         {filtroAberto && (
-          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 sm:hidden">
-            <aside className={`${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'} rounded-xl shadow-2xl p-6 w-[90vw] max-w-xs flex flex-col gap-6 relative animate-fadeIn`}>
-              <div className="flex justify-between items-center mb-2">
-                <h2 className={`text-lg font-bold ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>Buscar e Filtrar</h2>
-                <button
-                  className={`text-2xl px-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}
-                  onClick={() => setFiltroAberto(false)}
-                  aria-label="Fechar filtros"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="mb-4">
-                <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Nome do carro</h3>
-                <input
-                  type="text"
-                  placeholder="Procurar carros por nome..."
-                  className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white border-zinc-700' : 'bg-gradient-to-br from-zinc-100 via-white to-zinc-50 text-zinc-900 border-zinc-200'} w-full px-4 py-3 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base border`}
-                  value={busca}
-                  onChange={e => setBusca(e.target.value)}
-                  inputMode="search"
-                />
-              </div>
-              <div>
-                <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Marcas</h3>
-                {cars !== null && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {popularBrands?.map((brand) => (
-                      <BrandFilterCard
-                        key={brand}
-                        brand={brand}
-                        selected={brandFilter === brand}
-                        onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
-                      />
-                    ))}
-                    {brandFilter && (
-                      <button
-                        className={`px-3 py-2 rounded-lg border text-xs font-semibold ml-2 ${theme === 'dark' ? 'border-blue-900 bg-zinc-900 text-blue-200' : 'border-blue-200 bg-white text-blue-700'}`}
-                        onClick={() => setBrandFilter(null)}
-                        type="button"
-                      >
-                        Limpar filtro
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            </aside>
-          </div>
+          <HomeFilterModal
+            search={busca}
+            setSearch={setBusca}
+            brandFilter={brandFilter}
+            setBrandFilter={setBrandFilter}
+            popularBrands={popularBrands}
+            theme={theme}
+            onClose={() => setFiltroAberto(false)}
+          />
         )}
         {/* Filtro lateral fixo no desktop */}
         <aside className={`sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs rounded-xl  p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex ${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>

@@ -1,9 +1,11 @@
+
 "use client";
 import React, { useEffect, useState } from "react";
 // Carrossel simples para imagens
 import { Calendar, Droplet, Gauge, Palette, DollarSign, Phone } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import carsApi from "@/utils/carsApi";
+import Header from "../../components/Header";
 
 export default function CarPage() {
   const [activeImage, setActiveImage] = useState(1);
@@ -71,31 +73,33 @@ export default function CarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-zinc-100 py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header com título e preço */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div>
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-2">
-                  {car.name}
-                </h1>
-                <p className="text-xl text-blue-100">
-                  {car.brand} • {car.year}
-                </p>
-              </div>
-              <div className="text-left lg:text-right">
-                <p className="text-blue-100 text-sm mb-1">Preço</p>
-                <p className="text-4xl sm:text-5xl font-extrabold text-white">
-                  R$ {Number(car.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </p>
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-zinc-100 py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header com título e preço */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-6">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                  <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-2">
+                    {car.name}
+                  </h1>
+                  <p className="text-xl text-blue-100">
+                    {car.brand} • {car.year}
+                  </p>
+                </div>
+                <div className="text-left lg:text-right">
+                  <p className="text-blue-100 text-sm mb-1">Preço</p>
+                  <p className="text-4xl sm:text-5xl font-extrabold text-white">
+                    R$ {Number(car.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="p-8 sm:p-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="p-8 sm:p-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Coluna da esquerda - Carrossel de imagens */}
               <div className="space-y-6">
                 <div className="relative group">
@@ -281,5 +285,6 @@ export default function CarPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
