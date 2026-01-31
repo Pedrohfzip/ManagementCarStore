@@ -10,6 +10,7 @@ import UserMenu from "./UserMenu";
 import userProvider from "@/utils/usersApi";
 import { Search, X } from "lucide-react";
 import { data } from "autoprefixer";
+import userPrivder from "@/utils/usersApi";
 
 interface HeaderProps {
   onSearch?: (value: string) => void;
@@ -67,8 +68,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, theme = 'light' }) => {
     if (onSearch) onSearch(query);
   };
 
-  const handleLogout = () => {
-    // Implement logout logic here
+  const handleLogout = async () => {
+    const message: any =await userPrivder.logoutUser();
+    if(message.message){
+      if (typeof window !== 'undefined') {
+        window.location.assign('/');
+      }
+    }
   };
 
   const handleProfile = () => {
@@ -97,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, theme = 'light' }) => {
 
       <div className="flex items-center gap-2">
         <button
-          className={`text-2xl transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full ${theme === 'dark' ? 'text-zinc-100 hover:text-yellow-300' : 'text-zinc-700 hover:text-yellow-600'}`}
+          className={`text-2xl cursor-pointer transition-colors duration-200 flex items-center animate-fadeIn focus:outline-none p-1 rounded-full ${theme === 'dark' ? 'text-zinc-100 hover:text-yellow-300' : 'text-zinc-700 hover:text-yellow-600'}`}
           style={{ minWidth: 36, minHeight: 36 }}
           onClick={() => {
             if (authenticate) {
@@ -127,13 +133,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, theme = 'light' }) => {
             <span className="sm:hidden">DB</span>
           </button>
         )}
+        <UserMenu
+          open={!!menuOpen && !!authenticate}
+          onClose={() => setMenuOpen(false)}
+          onLogout={handleLogout}
+          onProfile={handleProfile}
+        />
       </div>
-      <UserMenu
-        open={!!menuOpen && !!authenticate}
-        onClose={() => setMenuOpen(false)}
-        onLogout={handleLogout}
-        onProfile={handleProfile}
-      />
     </header>
   );
 };

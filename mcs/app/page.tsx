@@ -35,6 +35,15 @@ export default function Page() {
 
   // Busca carros do backend usando searchCars, combinando busca e marca
   useEffect(() => {
+    async function tryRefreshToken() {
+      if (typeof window !== 'undefined' && window.localStorage.getItem('token')) {
+        try {
+          await usersApi.refreshToken();
+        } catch (err) {
+          window.location.assign('/login');
+        }
+      }
+    }
     const fetchFilteredCars = async () => {
       dispatch(setLoading(true));
       try {
@@ -61,8 +70,8 @@ export default function Page() {
         dispatch(setLoading(false));
       }
     };
-    fetchFilteredCars();
-  }, [busca, brandFilter]);
+    tryRefreshToken().then(fetchFilteredCars);
+  }, [busca, brandFilter, dispatch]);
 
   // Define o tema após o mount para evitar hydration mismatch
   useEffect(() => {
@@ -118,23 +127,6 @@ export default function Page() {
       <Header onSearch={setBusca} theme={theme} />
       
       {/* Botão de tema flutuante colado à direita */}
-      <div className="fixed top-20 right-2 z-50">
-        <button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="flex items-center gap-2 px-3 py-2 rounded-full shadow-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 transition hover:scale-100 text-lg"
-          aria-label="Alternar modo claro/escuro"
-        >
-          {theme === 'dark' ? (
-            <>
-              <p>Dark</p>
-            </>
-          ) : (
-            <>
-              <p>Light</p>
-            </>
-          )}
-        </button>
-      </div>
 
       <main className={`flex-1 w-full  mx-auto pt-28 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center'}`}>
         {/* Botão para abrir filtro no mobile */}

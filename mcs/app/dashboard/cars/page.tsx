@@ -126,20 +126,7 @@ export default function CarsDashboardPage() {
 						</div>
 					</div>
 									   )}
-				{/* Botão de tema fixo no canto superior direito */}
-				<div style={{ position: 'fixed', top: 16, right: 16, zIndex: 100 }}>
-					<button
-						onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-						className="flex items-center gap-2 px-3 py-2 rounded-full shadow-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 transition hover:scale-100 text-lg"
-						aria-label="Alternar modo claro/escuro"
-					>
-						{theme === 'dark' ? (
-							<span className="text-yellow-400 text-xl" role="img" aria-label="Modo escuro">🌙</span>
-						) : (
-							<span className="text-yellow-400 text-xl" role="img" aria-label="Modo claro">☀️</span>
-						)}
-					</button>
-				</div>
+				{/* ...botão de tema removido... */}
 				<div className="flex items-center justify-between mb-8">
 					<h1 className={`text-2xl sm:text-3xl font-bold tracking-tight ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>Carros</h1>
 					<a href="/dashboard/cars/createCar" className="flex items-center gap-2 px-5 py-2 rounded-full bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition-colors text-base sm:text-lg">

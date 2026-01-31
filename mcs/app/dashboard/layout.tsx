@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import usersApi from '@/utils/usersApi';
 import Link from 'next/link';
 import { FaUserCircle, FaBars } from 'react-icons/fa';
 import './dashboard.css';
@@ -14,6 +15,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       window.localStorage.setItem('theme', theme);
     }
   }, [theme]);
+
+    useEffect(() => {
+      async function tryRefreshToken() {
+        if (typeof window !== 'undefined' && window.localStorage.getItem('token')) {
+          try {
+            await usersApi.refreshToken();
+          } catch (err) {
+            window.location.assign('/login');
+          }
+        }
+      }
+      tryRefreshToken();
+    }, []);
 
   return (
     <div className={`dashboard-layout flex min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-zinc-100 text-zinc-900'}`}>

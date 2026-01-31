@@ -29,7 +29,7 @@ export default function UserMenu({ open, onClose, onLogout, onProfile }: UserMen
   if (!open) return null;
 
   return (
-    <div ref={menuRef} className="absolute right-0 top-14 bg-white rounded-xl shadow-xl border border-blue-100 py-2 w-44 z-50 animate-fadeIn">
+    <div ref={menuRef} className="absolute right-0 top-14 bg-white rounded-xl shadow-xl border border-blue-100 py-2 w-44 z-[1000] animate-fadeIn">
       <button
         className="w-full text-left px-5 py-3 hover:bg-blue-50 text-blue-700 font-semibold rounded-t-xl transition-colors"
         onClick={onProfile}
@@ -37,7 +37,7 @@ export default function UserMenu({ open, onClose, onLogout, onProfile }: UserMen
         Perfil
       </button>
       <button
-        className="w-full text-left px-5 py-3 hover:bg-blue-50 text-red-600 font-semibold rounded-b-xl transition-colors"
+        className="w-full cursor-pointer text-left px-5 py-3 hover:bg-blue-50 text-red-600 font-semibold rounded-b-xl transition-colors"
         onClick={onLogout}
       >
         Sair
