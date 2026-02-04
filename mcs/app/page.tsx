@@ -8,6 +8,7 @@ import usersApi from "@/utils/usersApi";
 import { useSelector, useDispatch } from "react-redux";
 import { setCars, setLoading, setError } from "../redux/slices/carsSlice";
 import carsApi from "@/utils/carsApi";
+import { ImageCarousel } from "@/components/ImageCarousel";
 export default function Page() {
   const [busca, setBusca] = useState("");
   const cars = useSelector((state: any) => state.cars.list);
@@ -114,6 +115,19 @@ export default function Page() {
     refreshAndFetch();
   }, [dispatch]);
 
+    const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  // Adicionar classe ao body para tema escuro
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   useEffect(() => {
     console.log(cars);
   }, []);
@@ -127,6 +141,10 @@ export default function Page() {
       <Header onSearch={setBusca} theme={theme} />
       
       {/* Botão de tema flutuante colado à direita */}
+
+      <div className="   mx-auto w-full">
+        <ImageCarousel theme={theme} />
+      </div>
 
       <main className={`flex-1 w-full  mx-auto pt-28 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center'}`}>
         {/* Botão para abrir filtro no mobile */}
@@ -153,7 +171,55 @@ export default function Page() {
           />
         )}
         {/* Filtro lateral fixo no desktop */}
-        <aside className={`sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs rounded-xl  p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex ${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>
+                <aside className={`sticky top-28 h-[calc(100vh-9rem)] min-w-[280px] max-w-xs rounded-2xl p-6 mr-8 flex-col gap-6 z-20 hidden sm:flex transition-colors duration-300 ${theme === 'dark' ? 'bg-zinc-800/80 backdrop-blur-sm border border-zinc-700' : 'bg-white/80 backdrop-blur-sm border border-zinc-200 shadow-xl'}`}>
+          <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>
+            Buscar e Filtrar
+          </h2>
+          
+          <div>
+            <h3 className={`text-sm font-semibold mb-3 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>
+              Nome do carro
+            </h3>
+            <input
+              type="text"
+              placeholder="Procurar carros..."
+              className={`w-full px-4 py-3 rounded-xl border transition-all ${
+                theme === 'dark'
+                  ? 'bg-zinc-900 text-white border-zinc-700 placeholder:text-zinc-500'
+                  : 'bg-white text-zinc-900 border-zinc-300 placeholder:text-zinc-400'
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              value={busca}
+              onChange={e => setBusca(e.target.value)}
+              inputMode="search"
+            />
+          </div>
+
+          <div>
+            <h3 className={`text-sm font-semibold mb-3 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>
+              Marcas
+            </h3>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {popularBrands.map((brand) => (
+                <BrandFilterCard
+                  key={brand}
+                  brand={brand}
+                  selected={brandFilter === brand}
+                  onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
+                />
+              ))}
+            </div>
+            {brandFilter && (
+              <button
+                className="w-full py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors text-sm"
+                onClick={() => setBrandFilter(null)}
+                type="button"
+              >
+                Limpar filtro
+              </button>
+            )}
+          </div>
+        </aside>
+        {/* <aside className={`sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs rounded-xl  p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex ${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>
           <h2 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>Buscar e Filtrar</h2>
           <div className="mb-4">
             <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Nome do carro</h3>
@@ -190,23 +256,40 @@ export default function Page() {
               </div>
             )}
           </div>
-        </aside>
+        </aside> */}
         {/* Catálogo de carros rolável */}
-        <section className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 7rem)' }}>
-          <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center sm:text-left">Todos os carros</h2>
-          {loading ? (
-            <p>Carregando carros...</p>
-          ) : error ? (
-            <p className="text-red-600">{error}</p>
-          ) : (
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10">
-              {cars && cars.length > 0 ? (
-                cars.map((car: any) => <CarCard key={car.id} car={car} />)
-              ) : (
-                <p className="col-span-full text-center">Nenhum carro encontrado.</p>
+        <section className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 9rem)' }}>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold">
+              Catálogo de Carros
+              {brandFilter && (
+                <span className="text-blue-600 dark:text-blue-400"> - {brandFilter}</span>
               )}
+            </h2>
+            <div className={`px-4 py-2 rounded-full ${theme === 'dark' ? 'bg-zinc-800' : 'bg-white'} shadow-md`}>
+              <span className={`text-sm font-semibold ${theme === 'dark' ? 'text-zinc-300' : 'text-zinc-600'}`}>
+                {cars.length} {cars.length === 1 ? 'carro' : 'carros'}
+              </span>
             </div>
-          )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 pb-8">
+            {cars.length > 0 ? (
+              cars.map((car) => <CarCard key={car.id} car={car} />)
+            ) : (
+              <div className="col-span-full text-center py-16">
+                <div className={`text-6xl mb-4 ${theme === 'dark' ? 'text-zinc-700' : 'text-zinc-300'}`}>
+                  🚗
+                </div>
+                <p className={`text-xl font-semibold ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                  Nenhum carro encontrado
+                </p>
+                <p className={`text-sm mt-2 ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-500'}`}>
+                  Tente ajustar os filtros
+                </p>
+              </div>
+            )}
+          </div>
         </section>
       </main>
     </div>
