@@ -1,11 +1,12 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import loginProvider from '@/utils/usersApi';
 import { FaUserPlus } from 'react-icons/fa';
 import Notification from '@/components/Notification';
 import { useRouter } from 'next/navigation';
+import { FaCar, FaRoad, FaShieldAlt, FaPhone } from 'react-icons/fa';
 
 export default function RegisterPage() {
 	const router = useRouter();
@@ -17,6 +18,7 @@ export default function RegisterPage() {
 	const [success, setSuccess] = useState(false);
 	const [focusField, setFocusField] = useState<'name' | 'email' | 'senha' | null>(null);
 	const [notif, setNotif] = useState<{ message: string, type: "success" | "error" } | null>(null);
+		const [currentSlide, setCurrentSlide] = useState(0);
 
 	type RegisterResponse = {
 		erro?: string;
@@ -52,6 +54,32 @@ export default function RegisterPage() {
 			setLoading(false);
 		}
 	};
+	const carouselSlides = [
+		{
+			image: 'https://images.unsplash.com/photo-1705747401901-28363172fe7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBzaG93cm9vbXxlbnwxfHx8fDE3NzAyMDU3NDJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+			icon: <FaCar className="text-6xl text-white mb-6" />,
+			title: 'Seu carro dos sonhos',
+			description: 'Encontre o veículo perfeito para você com as melhores condições do mercado'
+		},
+		{
+			image: 'https://images.unsplash.com/photo-1646208199109-68610835342d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcG9ydHMlMjBjYXIlMjBkcml2aW5nJTIwcm9hZHxlbnwxfHx8fDE3NzAyMTA2Mzh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+			icon: <FaRoad className="text-6xl text-white mb-6" />,
+			title: 'Test Drive Gratuito',
+			description: 'Agende um test drive e sinta a experiência de dirigir o seu próximo carro'
+		},
+		{
+			image: 'https://images.unsplash.com/photo-1758411897888-3ca658535fdf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjYXIlMjBpbnRlcmlvciUyMGRhc2hib2FyZHxlbnwxfHx8fDE3NzAyODYyNjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+			icon: <FaShieldAlt className="text-6xl text-white mb-6" />,
+			title: 'Garantia e Segurança',
+			description: 'Todos os veículos com garantia estendida e as melhores taxas de financiamento'
+		}
+	];
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+		}, 4000);
+		return () => clearInterval(timer);
+	}, [carouselSlides.length]);
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 animate-fadeInLogin">
