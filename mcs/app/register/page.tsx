@@ -16,7 +16,7 @@ export default function RegisterPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState(false);
-	const [carModel, setCarModel] = useState('');
+	// const [carModel, setCarModel] = useState('');
 	const [focusField, setFocusField] = useState<'name' | 'email' | 'senha' | null>(null);
 	const [notif, setNotif] = useState<{ message: string, type: "success" | "error" } | null>(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
@@ -27,6 +27,7 @@ export default function RegisterPage() {
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
+		console.log(email, senha);
 		e.preventDefault();
 		setLoading(true);
 		setError(null);
@@ -171,11 +172,11 @@ export default function RegisterPage() {
 
 			{/* Right side - Form */}
 			<div className="flex-1 flex items-center justify-center p-6 lg:p-12 bg-slate-100">
+
 				<form
 					onSubmit={handleSubmit}
 					className="relative bg-white p-8 lg:p-10 rounded-3xl shadow-2xl w-full max-w-md flex flex-col gap-6 border border-slate-200 animate-slideInLogin"
 				>
-
 					<label className="flex flex-col gap-2 animate-fadeInLogin">
 						<span className="font-semibold text-slate-700">Nome Completo</span>
 						<input
@@ -215,46 +216,24 @@ export default function RegisterPage() {
 					</label>
 
 					<label className="flex flex-col gap-2 animate-fadeInLogin">
-						<span className="font-semibold text-slate-700">Telefone</span>
+						<span className="font-semibold text-slate-700">Senha</span>
 						<input
-							type="tel"
+							type="password"
 							className={`border-2 rounded-xl px-4 py-3 focus:outline-none transition-all duration-200 bg-slate-50 ${
-								focusField === 'phone' 
+								focusField === 'senha' 
 									? 'border-orange-500 shadow-lg bg-white' 
 									: 'border-slate-200 hover:border-slate-300'
 							}`}
-							// value={phone}
-							onChange={e => setPhone(e.target.value)}
-							onFocus={() => setFocusField('phone')}
+							value={senha}
+							onChange={e => setSenha(e.target.value)}
+							onFocus={() => setFocusField('senha')}
 							onBlur={() => setFocusField(null)}
 							required
-							autoComplete="tel"
-							placeholder="(00) 00000-0000"
+							autoComplete="new-password"
+							placeholder="Digite sua senha"
 						/>
 					</label>
 
-					<label className="flex flex-col gap-2 animate-fadeInLogin">
-						<span className="font-semibold text-slate-700">Modelo de Interesse</span>
-						<select
-							className={`border-2 rounded-xl px-4 py-3 focus:outline-none transition-all duration-200 bg-slate-50 ${
-								focusField === 'carModel' 
-									? 'border-orange-500 shadow-lg bg-white' 
-									: 'border-slate-200 hover:border-slate-300'
-							}`}
-							value={carModel}
-							onChange={e => setCarModel(e.target.value)}
-							onFocus={() => setFocusField('carModel')}
-							onBlur={() => setFocusField(null)}
-							required
-						>
-							<option value="">Selecione um modelo</option>
-							<option value="sedan">Sedan</option>
-							<option value="suv">SUV</option>
-							<option value="hatch">Hatchback</option>
-							<option value="pickup">Pickup</option>
-							<option value="esportivo">Esportivo</option>
-						</select>
-					</label>
 
 					{error && (
 						<div className="text-red-600 text-sm text-center bg-red-50 py-2 px-4 rounded-lg animate-fadeInLogin">
@@ -263,7 +242,7 @@ export default function RegisterPage() {
 					)}
 					{success && (
 						<div className="text-green-600 text-sm text-center bg-green-50 py-2 px-4 rounded-lg animate-fadeInLogin">
-							✓ Mensagem enviada! Em breve entraremos em contato.
+							✓ Registro realizado com sucesso!
 						</div>
 					)}
 
@@ -272,7 +251,7 @@ export default function RegisterPage() {
 						className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl py-3 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300 mt-2"
 						disabled={loading}
 					>
-						{loading ? 'Enviando...' : 'Agendar Test Drive'}
+						{loading ? 'Enviando...' : 'Registrar'}
 					</button>
 
 					<div className="flex items-center justify-center gap-4 pt-2 text-sm text-slate-600 animate-fadeInLogin">

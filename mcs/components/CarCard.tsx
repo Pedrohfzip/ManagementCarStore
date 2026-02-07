@@ -1,7 +1,8 @@
-import { FaCalendarAlt, FaTachometerAlt, FaPalette } from "react-icons/fa";
+import { FaCalendarAlt, FaTachometerAlt, FaPalette, FaUser } from "react-icons/fa";
 import Link from "next/link";
 
 export default function CarCard({ car }: { car: any }) {
+  console.log(car?.userName);
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Imagem do carro */}
@@ -49,6 +50,10 @@ export default function CarCard({ car }: { car: any }) {
           >
             Ver Detalhes
           </Link>
+        </div>
+        <div className="flex items-center gap-3 mt-5 text-slate-600">
+            <FaUser className="w-4 h-4 text-slate-500 mr-1" />
+            <span className="text-sm text-dark">{car?.userName}</span>
         </div>
       </div>
     </div>

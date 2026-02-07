@@ -4,7 +4,7 @@ const initialState = {
   list: [],
   loading: false,
   imageList: [],
-  newPhotos: [], // novas imagens (Files)
+  newPhotos: [], 
   error: null,
 };
 

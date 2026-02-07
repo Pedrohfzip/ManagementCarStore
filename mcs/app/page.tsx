@@ -129,9 +129,8 @@ export default function Page() {
   }, [theme]);
 
   useEffect(() => {
-    console.log(cars);
   }, []);
-
+console.log('Carros para exibir:', cars);
   // Top 1 carro em destaque (primeiro do array)
 
     // Evita renderizar até o tema ser definido no client

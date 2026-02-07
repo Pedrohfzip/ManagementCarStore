@@ -25,7 +25,7 @@ async function registerUser(name: string, email: string, senha: string, role: st
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ name, email, senha, role }),
-  });
+  }) as Promise<{ erro?: string }>;
 }
 async function deleteUser(userId: string) {
   return fetcher(`/users/${userId}/`, {
