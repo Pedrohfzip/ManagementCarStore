@@ -126,30 +126,7 @@ export default function Dashboard() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Usuários Ativos */}
-                    <section className={`rounded-xl shadow p-6 border ${theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'}`}>
-                        <h2 className="text-lg font-semibold mb-4">Usuários Ativos</h2>
-                        {loading ? (
-                            <p className={theme === 'dark' ? 'text-zinc-300' : 'text-zinc-500'}>Carregando usuários...</p>
-                        ) : error ? (
-                            <p className="text-red-500">{error}</p>
-                        ) : users.length === 0 ? (
-                            <p className={theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'}>Nenhum usuário encontrado.</p>
-                        ) : (
-                            <ul className="divide-y divide-gray-100 dark:divide-zinc-700">
-                                {users.map((user, idx) => (
-                                    <li key={user.id || idx} className="py-2 flex items-center gap-3">
-                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg ${theme === 'dark' ? 'bg-zinc-900 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>{user.name ? user.name[0].toUpperCase() : '?'}</div>
-                                        <div>
-                                            <div className="font-medium">{user.name || 'Usuário'}</div>
-                                            <div className="text-xs" style={{ color: theme === 'dark' ? '#d1d5db' : '#64748b' }}>{user.email || ''}</div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </section>
+                <div className="grid grid-cols-1  gap-8">
 
                     {/* Carros Cadastrados */}
                     <section className={`rounded-xl shadow p-6 border ${theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100'}`}>

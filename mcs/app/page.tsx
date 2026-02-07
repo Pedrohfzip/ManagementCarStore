@@ -218,44 +218,6 @@ console.log('Carros para exibir:', cars);
             )}
           </div>
         </aside>
-        {/* <aside className={`sticky top-28 h-[calc(100vh-7rem)] min-w-[260px] max-w-xs rounded-xl  p-4 mr-8 flex-col gap-6 z-20 hidden sm:flex ${theme === 'dark' ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-50 text-zinc-900'}`}>
-          <h2 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>Buscar e Filtrar</h2>
-          <div className="mb-4">
-            <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Nome do carro</h3>
-            <input
-              type="text"
-              placeholder="Procurar carros por nome..."
-              className={`${theme === 'dark' ? 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white border-zinc-700' : 'bg-gradient-to-br from-zinc-100 via-white to-zinc-50 text-zinc-900 border-zinc-200'} w-full px-4 py-3 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-500 text-base border`}
-              value={busca}
-              onChange={e => setBusca(e.target.value)}
-              inputMode="search"
-            />
-          </div>
-          <div>
-            <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Marcas</h3>
-            {cars !== null && (
-              <div className="flex flex-wrap gap-2 mb-2">
-                {popularBrands?.map((brand) => (
-                  <BrandFilterCard
-                    key={brand}
-                    brand={brand}
-                    selected={brandFilter === brand}
-                    onClick={(b) => setBrandFilter(brandFilter === b ? null : b)}
-                  />
-                ))}
-                {brandFilter && (
-                  <button
-                    className={`px-3 py-2 rounded-lg border text-xs font-semibold ml-2 ${theme === 'dark' ? 'border-blue-900 bg-zinc-900 text-blue-200' : 'border-blue-200 bg-white text-blue-700'}`}
-                    onClick={() => setBrandFilter(null)}
-                    type="button"
-                  >
-                    Limpar filtro
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        </aside> */}
         {/* Catálogo de carros rolável */}
         <section className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 9rem)' }}>
           <div className="flex items-center justify-between mb-8">
