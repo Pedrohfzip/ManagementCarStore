@@ -219,7 +219,10 @@ console.log('Carros para exibir:', cars);
           </div>
         </aside>
         {/* Catálogo de carros rolável */}
-        <section className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 9rem)' }}>
+        <section
+          className="flex-1 overflow-y-auto custom-scrollbar"
+          style={{ maxHeight: 'calc(100vh - 9rem)' }}
+        >
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold">
               Catálogo de Carros

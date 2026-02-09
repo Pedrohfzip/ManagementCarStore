@@ -94,9 +94,11 @@ export function ImageCarousel({ theme }: ImageCarouselProps) {
               <img 
                 src={image.url} 
                 alt={image.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              {/* Degradê extra na parte inferior */}
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/80 via-black/0 to-transparent pointer-events-none" />
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-12">
               <h2 className="text-3xl sm:text-5xl font-bold text-white mb-2 drop-shadow-lg">
