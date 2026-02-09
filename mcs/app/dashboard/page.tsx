@@ -3,19 +3,30 @@
 
 
 import React, { useEffect, useState, useMemo } from "react";
+import { jwtDecode } from "jwt-decode";
 import userApi from '@/utils/usersApi';
 import CarCard from "@/components/CarCard";
 import BrandFilterCard from '@/components/BrandFilterCard';
 import carsApi from '@/utils/carsApi';
 
 export default function Dashboard() {
-    const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     // Inicializa sempre como 'light' para evitar mismatch SSR/CSR
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [cars, setCars] = useState<any[]>([]);
     const [brandFilter, setBrandFilter] = useState<string | null>(null);
+    const [uuid, setUuid] = useState<string>('');
+
+    useEffect(() => {
+
+        const fetchCars = async () => {
+
+
+
+        }
+        fetchCars();    
+    }, []);
     // Marcas populares dos carros cadastrados
     const popularBrands = useMemo(() => {
         console.log(cars);
@@ -55,45 +66,25 @@ export default function Dashboard() {
         }
     }, [theme]);
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                setLoading(true);
-                // Tenta renovar o token antes de buscar usuários
-                try {
-                    await userApi.refreshToken();
-                } catch (refreshErr) {
-                    // Se falhar, pode ignorar ou tratar logout
-                }
-                const data = await userApi.getAllUsers();
-                setUsers(Array.isArray(data) ? data : []);
-            } catch (err: any) {
-                setError(err.message || 'Erro ao buscar usuários');
-            }
-            // Buscar carros do banco
-            try {
-                const carsData = await carsApi.getAllCars();
-                setCars(Array.isArray(carsData) ? carsData : []);
-            } catch {
-                // Se falhar, apenas não mostra carros
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         // Buscar carros do banco
+    //         try {
+    //                    const carsApiModule = await import("@/utils/carsApi");
+    //                 const response: any = await carsApiModule.default.getAllCars();
+    //             console.log(response);
+    //             setCars(Array.isArray(response) ? response : []);
+    //         } catch {
+    //             // Se falhar, apenas não mostra carros
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    //     fetchData();
+    // }, []);
 
     // Estatísticas rápidas
     const stats = [
-        {
-            label: 'Usuários Ativos',
-            value: users.length,
-            icon: (
-                <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-            ),
-        },
         {
             label: 'Carros Cadastrados',
             value: cars.length,

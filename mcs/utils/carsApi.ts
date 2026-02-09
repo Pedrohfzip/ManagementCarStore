@@ -93,6 +93,13 @@ async function searchCars(params: { name?: string; brand?: string; year?: string
   });
 }
 
+async function getUserCars(id: string) {
+  return fetcher(`/cars/getUserCars/${id}`, {
+    method: 'GET',
+    credentials: "include",
+  });
+}
+
 export default {
   createCar,
   getAllCars,
@@ -101,6 +108,7 @@ export default {
   deleteCar,
   deleteCarImage,
   searchCars,
+  getUserCars,
 };
 
 // Adicione outras funções relacionadas a carros aqui
