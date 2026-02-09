@@ -45,10 +45,10 @@ export default function CarPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-zinc-100">
+      <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-xl text-zinc-600">Carregando detalhes...</p>
+          <p className="text-xl text-white">Carregando detalhes...</p>
         </div>
       </div>
     );
@@ -57,9 +57,9 @@ export default function CarPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-zinc-100">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
-          <p className="text-xl text-red-600">{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-center p-8 bg-zinc-900 rounded-2xl shadow-lg">
+          <p className="text-xl text-red-500">{error}</p>
         </div>
       </div>
     );
@@ -67,9 +67,9 @@ export default function CarPage() {
 
   if (!car) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-zinc-100">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
-          <p className="text-xl text-zinc-600">Carro não encontrado.</p>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-center p-8 bg-zinc-900 rounded-2xl shadow-lg">
+          <p className="text-xl text-white">Carro não encontrado.</p>
         </div>
       </div>
     );
@@ -78,34 +78,8 @@ export default function CarPage() {
   return (
     <>
       <Header />
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <main className="bg-black text-white mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 h-full min-h-screen">
         {/* Hero header */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-primary rounded-2xl px-6 sm:px-8 py-6 mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
-        >
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-primary-foreground mb-1">
-              {car.name}
-            </h1>
-            <p className="text-primary-foreground/70 text-base">
-              {car.brand} • {car.year}
-            </p>
-          </div>
-          <div className="lg:text-right">
-            <p className="text-primary-foreground/60 text-xs uppercase tracking-wider mb-0.5">
-              Preço
-            </p>
-            <p className="text-3xl sm:text-4xl font-extrabold text-gradient-gold font-sans">
-              R${" "}
-              {Number(car.price).toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-              })}
-            </p>
-          </div>
-        </motion.div>
 
         {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -129,11 +103,11 @@ export default function CarPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.4 }}
               >
-                <h2 className="text-2xl font-display font-bold text-foreground mb-3">
+                <h2 className="text-2xl font-display font-bold text-white mb-3">
                   Descrição
                 </h2>
-                <div className="bg-muted/50 rounded-xl p-5 border border-border">
-                  <p className="text-muted-foreground leading-relaxed text-sm">
+                <div className="bg-zinc-800 rounded-xl p-5 border border-zinc-700">
+                  <p className="text-zinc-200 leading-relaxed text-sm">
                     {car.description}
                   </p>
                 </div>
@@ -142,8 +116,9 @@ export default function CarPage() {
           </div>
         </div>
 
+    
         {/* Highlights */}
-        <CarHighlights />
+
       </main>
     </>
   );
