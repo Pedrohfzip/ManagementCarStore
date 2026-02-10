@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import carProvider from '@/utils/carsApi';
 import { useSelector, useDispatch } from "react-redux";
 import { setImageList } from '../../../../redux/slices/carsSlice';
-
-
+import cityProvider from '@/utils/city';
+import CitySelect from "@/app/dashboard/cars/createCar/CitySelect";
 export default function CreateCarPage() {
 	const [name, setName] = useState("");
 	const [brand, setBrand] = useState("");
@@ -64,7 +64,7 @@ export default function CreateCarPage() {
 	useEffect(() => {
 		const fetchCities = async () => {
 			try {
-				const cities = await carProvider.getCities();
+				const cities = await cityProvider.getCities();
 				console.log("Cidades disponíveis:", cities);
 			} catch (err) {
 				console.error("Erro ao buscar cidades:", err);
@@ -74,12 +74,16 @@ export default function CreateCarPage() {
 	}, []);
 
 
+	const [city, setCity] = useState<string>("");
+
+	// setCity is already defined as a state setter above, so you can remove the previous function definition.
+
 	return (
-		<div className="min-h-screen p-4 flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+		<div className="min-h-screen p-4 flex items-center justify-center bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-700 text-white">
 			<div className="w-full max-w-3xl">
 				<form
 					onSubmit={handleSubmit}
-					className="relative bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-blue-100/50 animate-fadeInLogin"
+					className="relative bg-black/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-blue-100/50 animate-fadeInLogin"
 					autoComplete="off"
 					encType="multipart/form-data"
 				>
@@ -219,6 +223,9 @@ export default function CreateCarPage() {
 									required
 								/>
 							</div>
+							<div className="space-y-2">
+								<CitySelect value={city} onChange={setCity} />
+							</div>
 						</div>
 
 						{/* Upload de Imagens */}
@@ -285,7 +292,7 @@ export default function CreateCarPage() {
 					{error && (
 						<div className="mt-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm animate-fadeInLogin">
 							<div className="flex items-center gap-2">
-								{/* <X className="w-4 h-4" /> */}
+								<CitySelect value={city} onChange={setCity} />
 								{error}
 							</div>
 						</div>
