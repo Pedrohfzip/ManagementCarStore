@@ -100,6 +100,13 @@ async function getUserCars(id: string) {
   });
 }
 
+async function getCities() {
+  return fetcher('/citys/getCities/', {
+    method: 'GET',
+    credentials: "include",
+  });
+}
+
 export default {
   createCar,
   getAllCars,
@@ -109,6 +116,7 @@ export default {
   deleteCarImage,
   searchCars,
   getUserCars,
+  getCities,
 };
 
 // Adicione outras funções relacionadas a carros aqui

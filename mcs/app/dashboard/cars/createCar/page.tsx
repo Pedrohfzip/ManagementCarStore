@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import carProvider from '@/utils/carsApi';
 import { useSelector, useDispatch } from "react-redux";
@@ -8,21 +8,21 @@ import { setImageList } from '../../../../redux/slices/carsSlice';
 
 
 export default function CreateCarPage() {
-const [name, setName] = useState("");
-const [brand, setBrand] = useState("");
-const [year, setYear] = useState("");
-const [gas, setGas] = useState("");
-const [color, setColor] = useState("");
-const [km, setKm] = useState("");
-const [photo, setImagem] = useState<File | null>(null);
-const [price, setPrice] = useState("");
-const [preview, setPreview] = useState<string | null>(null);
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState<string | null>(null);
-const [success, setSuccess] = useState(false);
-const dispatch = useDispatch();
-const imageList = useSelector((state: any) => state.cars.imageList);
-const router = useRouter();
+	const [name, setName] = useState("");
+	const [brand, setBrand] = useState("");
+	const [year, setYear] = useState("");
+	const [gas, setGas] = useState("");
+	const [color, setColor] = useState("");
+	const [km, setKm] = useState("");
+	const [photo, setImagem] = useState<File | null>(null);
+	const [price, setPrice] = useState("");
+	const [preview, setPreview] = useState<string | null>(null);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [success, setSuccess] = useState(false);
+	const dispatch = useDispatch();
+	const imageList = useSelector((state: any) => state.cars.imageList);
+	const router = useRouter();
 
 
 
@@ -59,6 +59,18 @@ const router = useRouter();
 	console.log(imageList);
 	useEffect(() => {
 		console.log("imageList atualizado:", imageList);
+	}, []);
+
+	useEffect(() => {
+		const fetchCities = async () => {
+			try {
+				const cities = await carProvider.getCities();
+				console.log("Cidades disponíveis:", cities);
+			} catch (err) {
+				console.error("Erro ao buscar cidades:", err);
+			}
+		};
+		fetchCities();
 	}, []);
 
 

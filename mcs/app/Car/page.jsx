@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 // Carrossel simples para imagens
 import { Calendar, Droplet, Gauge, Palette, DollarSign, Phone } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -41,6 +41,10 @@ export default function CarPage() {
     }
     fetchCar();
   }, [id]);
+
+  useEffect(() => {
+    
+  }, []);
 
 
   if (loading) {
