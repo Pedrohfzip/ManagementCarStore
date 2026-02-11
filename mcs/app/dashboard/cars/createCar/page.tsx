@@ -92,8 +92,8 @@ export default function CreateCarPage() {
 						<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 mb-4 shadow-lg">
 							{/* <Car className="w-8 h-8 text-white" /> */}
 						</div>
-						<h1 className="text-3xl font-bold text-zinc-900 mb-2">Cadastrar Carro</h1>
-						<p className="text-zinc-500">Preencha os dados para adicionar um novo veículo ao catálogo</p>
+						<h1 className="text-3xl font-bold text-white mb-2">Cadastrar Carro</h1>
+						<p className="text-zinc-400">Preencha os dados para adicionar um novo veículo ao catálogo</p>
 					</div>
 
 					{/* Form Fields */}
@@ -102,7 +102,7 @@ export default function CreateCarPage() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="space-y-2">
 								{/* <Label htmlFor="name" ...> */}
-								<label htmlFor="name" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="name" className="flex  items-center gap-2 text-white font-medium">
 									{/* <Car className="w-4 h-4 text-blue-600" /> */}
 									Nome do Veículo
 								</label>
@@ -118,7 +118,7 @@ export default function CreateCarPage() {
 							</div>
 
 							<div className="space-y-2">
-								<label htmlFor="brand" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="brand" className="flex items-center gap-2 text-white font-medium">
 									{/* <Car className="w-4 h-4 text-blue-600" /> */}
 									Marca
 								</label>
@@ -137,7 +137,7 @@ export default function CreateCarPage() {
 						{/* Ano, Combustível e Cor */}
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 							<div className="space-y-2">
-								<label htmlFor="year" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="year" className="flex items-center gap-2 text-white font-medium">
 									{/* <Calendar className="w-4 h-4 text-blue-600" /> */}
 									Ano
 								</label>
@@ -155,7 +155,7 @@ export default function CreateCarPage() {
 							</div>
 
 							<div className="space-y-2">
-								<label htmlFor="gas" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="gas" className="flex items-center gap-2 text-white font-medium">
 									{/* <Fuel className="w-4 h-4 text-blue-600" /> */}
 									Combustível
 								</label>
@@ -171,7 +171,7 @@ export default function CreateCarPage() {
 							</div>
 
 							<div className="space-y-2">
-								<label htmlFor="color" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="color" className="flex items-center gap-2 text-white font-medium">
 									{/* <Palette className="w-4 h-4 text-blue-600" /> */}
 									Cor
 								</label>
@@ -190,7 +190,7 @@ export default function CreateCarPage() {
 						{/* KM e Preço */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="space-y-2">
-								<label htmlFor="km" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="km" className="flex items-center gap-2 text-white font-medium">
 									{/* <Gauge className="w-4 h-4 text-blue-600" /> */}
 									Quilometragem
 								</label>
@@ -207,7 +207,7 @@ export default function CreateCarPage() {
 							</div>
 
 							<div className="space-y-2">
-								<label htmlFor="price" className="flex items-center gap-2 text-zinc-700 font-medium">
+								<label htmlFor="price" className="flex items-center gap-2 text-white font-medium">
 									{/* <DollarSign className="w-4 h-4 text-blue-600" /> */}
 									Preço (R$)
 								</label>
@@ -230,7 +230,7 @@ export default function CreateCarPage() {
 
 						{/* Upload de Imagens */}
 						<div className="space-y-3">
-							<label className="flex items-center gap-2 text-zinc-700 font-medium">
+							<label className="flex items-center gap-2 text-white font-medium">
 								{/* <Upload className="w-4 h-4 text-blue-600" /> */}
 								Imagens do Veículo
 								<span className="text-xs text-zinc-400 font-normal ml-auto">

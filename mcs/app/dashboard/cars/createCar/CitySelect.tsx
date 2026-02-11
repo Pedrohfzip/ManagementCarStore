@@ -58,7 +58,7 @@ const CitySelect: React.FC<CitySelectProps> = ({ value, onChange }) => {
 
   return (
     <div className="space-y-2 relative bg-black/20 ">
-      <label htmlFor="city-search" className="flex items-center gap-2 text-zinc-700 font-medium">
+      <label htmlFor="city-search" className="flex items-center gap-2 text-white font-medium">
         Cidade
       </label>
       <input
