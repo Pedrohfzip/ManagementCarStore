@@ -20,10 +20,10 @@ export default function CreateCarPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState(false);
+	const [city, setCity] = useState<string>("");
 	const dispatch = useDispatch();
 	const imageList = useSelector((state: any) => state.cars.imageList);
 	const router = useRouter();
-
 
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,22 +39,23 @@ export default function CreateCarPage() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setLoading(true);
-		setError(null);
-		setSuccess(false);
-		console.log(preview);
-		try {
-			const response = await carProvider.createCar(name, brand, Number(year),  imageList, gas, color, Number(km), Number(price));
-			if (response?.erro) {
-				setError(response.erro);
-			} else {
-				// setTimeout(() => router.push("/dashboard/cars"), 1200);
-			}
-		} catch (err: any) {
-			setError(err.message || "Erro ao criar carro.");
-		} finally {
-			setLoading(false);
-		}
+		console.log(city);
+		// setLoading(true);
+		// setError(null);
+		// setSuccess(false);
+		// console.log(preview);
+		// try {
+		// 	const response = await carProvider.createCar(name, brand, Number(year),  imageList, gas, color, Number(km), Number(price), Number(city));
+		// 	if (response?.erro) {
+		// 		setError(response.erro);
+		// 	} else {
+		// 		// setTimeout(() => router.push("/dashboard/cars"), 1200);
+		// 	}
+		// } catch (err: any) {
+		// 	setError(err.message || "Erro ao criar carro.");
+		// } finally {
+		// 	setLoading(false);
+		// }
 	};
 	console.log(imageList);
 	useEffect(() => {
@@ -74,7 +75,7 @@ export default function CreateCarPage() {
 	}, []);
 
 
-	const [city, setCity] = useState<string>("");
+
 
 	// setCity is already defined as a state setter above, so you can remove the previous function definition.
 

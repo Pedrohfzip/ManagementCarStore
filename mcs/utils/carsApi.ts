@@ -4,7 +4,7 @@
 import { get } from "http";
 import { fetcher } from "./api";
 
-async function createCar(name: string, brand: string, year: number, photos: [], gas: string, color: string, km: number, price: number) {
+async function createCar(name: string, brand: string, year: number, photos: [], gas: string, color: string, km: number, price: number, cityId: number) {
   const formData = new FormData();
   formData.append('name', name);
   formData.append('brand', brand);
