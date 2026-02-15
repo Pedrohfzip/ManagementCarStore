@@ -36,6 +36,12 @@ export default function CarCard({ car }: { car: any }) {
             <FaPalette className="w-5 h-5 text-purple-500" />
             <span className="text-sm">Cor: <span className="font-medium">{car?.color || car?.cor}</span></span>
           </div>
+          {/* Cidade e Estado */}
+          {car?.city && (
+            <div className="flex items-center gap-3 text-slate-600">
+              <span className="text-sm"><span className="font-medium"> {car.city}{car.state ? ` - ${car.state}` : ""}</span></span>
+            </div>
+          )}
         </div>
 
         {/* Preço e botão */}

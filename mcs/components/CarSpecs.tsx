@@ -15,6 +15,7 @@ const specs = [
 ];
 
 const CarSpecs = ({ car }: CarSpecsProps) => {
+  console.log(car);
   return (
     <div>
       <h2 className="text-2xl font-display font-bold text-white mb-4">
@@ -46,6 +47,25 @@ const CarSpecs = ({ car }: CarSpecsProps) => {
             </motion.div>
           );
         })}
+        {/* Cidade e Estado */}
+        {car.city && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+            className="rounded-xl p-4 border text-white bg-spec-blue/10 border-spec-blue/20 transition-shadow hover:shadow-md col-span-2"
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xs font-semibold uppercase tracking-wide opacity-80 text-white">
+                Cidade
+              </span>
+            </div>
+            <p className="text-xl font-bold text-white">
+              {car.city}
+              {car.state ? ` - ${car.state}` : ""}
+            </p>
+          </motion.div>
+        )}
       </div>
       <motion.div
         initial={{ opacity: 0, y: -10 }}
