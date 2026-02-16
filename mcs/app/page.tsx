@@ -18,6 +18,16 @@ export default function Page() {
   const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
   const [brandFilter, setBrandFilter] = useState<string | null>(null);
   const [filtroAberto, setFiltroAberto] = useState(false);
+  const [cityFilter, setCityFilter] = useState<string | null>(null);
+  // Derive cityList from cars
+  const cityList = useMemo(() => {
+    const cities = Array.isArray(cars)
+      ? cars
+          .map((car: any) => (car.city || car.cidade || "").trim())
+          .filter((city: string) => city.length > 0)
+      : [];
+    return Array.from(new Set(cities));
+  }, [cars]);
 
   // Marcas populares dos carros carregados
   const popularBrands = useMemo(() => {
@@ -56,7 +66,8 @@ export default function Page() {
           params.name = busca;
         }
         if (brandFilter) params.brand = brandFilter;
-        if (!busca && !brandFilter) {
+        if (cityFilter) params.city = cityFilter;
+        if (!busca && !brandFilter && !cityFilter) {
           const all = await carsApi.getAllCars();
           dispatch(setCars(all));
           dispatch(setError(null));
@@ -72,7 +83,7 @@ export default function Page() {
       }
     };
     tryRefreshToken().then(fetchFilteredCars);
-  }, [busca, brandFilter, dispatch]);
+  }, [busca, brandFilter, cityFilter, dispatch]);
 
   // Define o tema após o mount para evitar hydration mismatch
   useEffect(() => {
@@ -145,7 +156,7 @@ console.log('Carros para exibir:', cars);
         <ImageCarousel theme={theme} />
       </div>
 
-      <main className={`flex-1 w-full  mx-auto pt-28 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center'}`}>
+      <main className={`flex-1 w-full  mx-auto pt-20 pb-10 px-2 sm:px-6 flex ${filtroAberto ? '' : 'justify-center items-center'}`}>
         {/* Botão para abrir filtro no mobile */}
         <button
           className="sm:hidden fixed left-2 top-24 z-30 flex items-center gap-2 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white px-5 py-3 rounded-full shadow-2xl border-2 border-blue-300 font-bold text-base tracking-wide hover:scale-105 hover:from-blue-700 hover:to-blue-500 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
@@ -167,10 +178,13 @@ console.log('Carros para exibir:', cars);
             popularBrands={popularBrands}
             theme={theme}
             onClose={() => setFiltroAberto(false)}
+            cityFilter={cityFilter}
+            setCityFilter={setCityFilter}
+            cityList={cityList}
           />
         )}
         {/* Filtro lateral fixo no desktop */}
-                <aside className={`sticky top-28 h-[calc(100vh-9rem)] min-w-[280px] max-w-xs rounded-2xl p-6 mr-8 flex-col gap-6 z-20 hidden sm:flex transition-colors duration-300 ${theme === 'dark' ? 'bg-zinc-800/80 backdrop-blur-sm border border-zinc-700' : 'bg-white/80 backdrop-blur-sm border border-zinc-200 shadow-xl'}`}>
+        <aside className={`sticky top-28 h-[calc(100vh-9rem)] min-w-[280px] max-w-xs rounded-2xl p-6 mr-8 flex-col gap-6 z-20 hidden sm:flex transition-colors duration-300 ${theme === 'dark' ? 'bg-zinc-800/80 backdrop-blur-sm border border-zinc-700' : 'bg-white/80 backdrop-blur-sm border border-zinc-200 shadow-xl'}`}>
           <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'}`}>
             Buscar e Filtrar
           </h2>
@@ -216,11 +230,34 @@ console.log('Carros para exibir:', cars);
                 Limpar filtro
               </button>
             )}
+            {/* Filtro de cidade */}
+            <div className="mt-4">
+              <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-zinc-200' : 'text-zinc-700'}`}>Cidade</h3>
+              <select
+                className={`w-full px-4 py-3 rounded-xl border transition-all ${theme === 'dark' ? 'bg-zinc-900 text-white border-zinc-700' : 'bg-white text-zinc-900 border-zinc-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                value={cityFilter || ''}
+                onChange={e => setCityFilter(e.target.value || null)}
+              >
+                <option value="">Todas as cidades</option>
+                {cityList.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+              {cityFilter && (
+                <button
+                  className="w-full py-2 mt-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors text-sm"
+                  onClick={() => setCityFilter(null)}
+                  type="button"
+                >
+                  Limpar cidade
+                </button>
+              )}
+            </div>
           </div>
         </aside>
         {/* Catálogo de carros rolável */}
         <section
-          className="flex-1 overflow-y-auto custom-scrollbar"
+          className="flex-1 overflow-y-auto custom-scrollbar justify-center items-center"
           style={{ maxHeight: 'calc(100vh - 9rem)' }}
         >
           <div className="flex items-center justify-between mb-8">
@@ -237,11 +274,11 @@ console.log('Carros para exibir:', cars);
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 pb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-5 md:gap-8 justify-center items-center">
             {cars.length > 0 ? (
               cars.map((car) => <CarCard key={car.id} car={car} />)
             ) : (
-              <div className="col-span-full text-center py-16">
+              <div className="col-span-full text-center py-16 items-center">
                 <div className={`text-6xl mb-4 ${theme === 'dark' ? 'text-zinc-700' : 'text-zinc-300'}`}>
                   🚗
                 </div>

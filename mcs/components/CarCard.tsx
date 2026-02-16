@@ -1,13 +1,13 @@
-import { FaCalendarAlt, FaTachometerAlt, FaPalette, FaUser } from "react-icons/fa";
+import { FaCalendarAlt, FaTachometerAlt, FaPalette, FaUser, FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
 
 export default function CarCard({ car }: { car: any }) {
   console.log(car?.userName);
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full">
       {/* Imagem do carro */}
-      <div className="relative h-48 overflow-hidden bg-slate-200">
-        <img 
+      <div className="relative h-28 overflow-hidden bg-slate-200">
+        <img
           src={Array.isArray(car?.images) && car.images.length > 0 ? car.images[0].imageUrl : "/car-placeholder.png"}
           alt={`${car?.brand || car?.marca} ${car?.name || car?.nome}`}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -15,51 +15,40 @@ export default function CarCard({ car }: { car: any }) {
       </div>
 
       {/* Informações do carro */}
-      <div className="p-6">
+      <div className="p-3">
         {/* Nome e Marca */}
-        <div className="mb-4">
-          <h2 className="text-slate-800 text-lg font-bold">{car?.brand || car?.marca} {car?.name || car?.nome}</h2>
-          <p className="text-slate-500 text-sm mt-1">{car?.brand || car?.marca}</p>
-        </div>
-
-        {/* Detalhes */}
-        <div className="space-y-3 mb-5">
-          <div className="flex items-center gap-3 text-slate-600">
-            <FaCalendarAlt className="w-5 h-5 text-blue-500" />
-            <span className="text-sm">Ano: <span className="font-medium">{car?.year || car?.ano}</span></span>
-          </div>
-          <div className="flex items-center gap-3 text-slate-600">
-            <FaTachometerAlt className="w-5 h-5 text-green-500" />
-            <span className="text-sm">Quilometragem: <span className="font-medium">{(car?.km || 0).toLocaleString('pt-BR')} km</span></span>
-          </div>
-          <div className="flex items-center gap-3 text-slate-600">
-            <FaPalette className="w-5 h-5 text-purple-500" />
-            <span className="text-sm">Cor: <span className="font-medium">{car?.color || car?.cor}</span></span>
-          </div>
-          {/* Cidade e Estado */}
-          {car?.city && (
-            <div className="flex items-center gap-3 text-slate-600">
-              <span className="text-sm"><span className="font-medium"> {car.city}{car.state ? ` - ${car.state}` : ""}</span></span>
-            </div>
-          )}
+        <div className="mb-2">
+          <h2 className="text-slate-800 text-base font-bold truncate">{car?.brand || car?.marca} {car?.name || car?.nome}</h2>
+          <p className="text-slate-500 text-xs mt-1 truncate">{car?.brand || car?.marca}</p>
         </div>
 
         {/* Preço e botão */}
-        <div className="border-t border-slate-200 pt-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm text-slate-500">Preço</p>
-            <p className="text-green-600 font-semibold text-xl">{`R$ ${car?.price}` || car?.preco || 'R$ --'}</p>
+        <div className="border-t border-slate-200 pt-2 flex items-center ">
+          <div className="">
+            <p className="text-xs text-slate-500">Preço</p>
+            <p className="text-green-600 font-semibold text-lg">
+              {typeof car?.price === "number" || typeof car?.preco === "number"
+                ? `R$ ${Number(car?.price ?? car?.preco).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+                : (car?.price || car?.preco || "R$ --")}
+            </p>
           </div>
-          <Link
-            href={`/Car?id=${car?.id}`}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-colors duration-200"
-          >
-            Ver Detalhes
-          </Link>
         </div>
-        <div className="flex items-center gap-3 mt-5 text-slate-600">
+        <div className="flex text-black pt-1 pb-1 ">
+            <p className="text-sm flex"><FaMapMarkerAlt/>{car.city}</p>
+        </div>
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center">
             <FaUser className="w-4 h-4 text-slate-500 mr-1" />
-            <span className="text-sm text-dark">{car?.userName}</span>
+            <span className="flex text-xs text-black items-center">{car?.userName}</span>
+          </div>
+          <div className="flex items-center">
+            <Link
+              href={`/Car?id=${car?.id}`}
+              className="  text-black font-semibold   rounded-md text-xs transition-colors duration-200"
+            >
+              Detalhes
+            </Link>
+          </div>
         </div>
       </div>
     </div>

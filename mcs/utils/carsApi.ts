@@ -81,11 +81,12 @@ async function deleteCarImage(carId: string, imageId: string) {
 }
 
 
-async function searchCars(params: { name?: string; brand?: string; year?: string | number }) {
+async function searchCars(params: { name?: string; brand?: string; year?: string | number; city?: string }) {
   const query = new URLSearchParams();
   if (params.name) query.append('name', params.name);
   if (params.brand) query.append('brand', params.brand);
   if (params.year) query.append('year', String(params.year));
+  if (params.city) query.append('city', params.city);
 
   return fetcher(`/cars/search?${query}`, {
     method: 'GET',
